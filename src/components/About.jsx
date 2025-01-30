@@ -4,7 +4,6 @@ import motoislalogo from "../assets/motoislalogo.jpg";
 import PlaceIcon from "@mui/icons-material/Place";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
-import foto from "../assets/LOGO-1.png";
 import repair from "../assets/Repair.jpg"
 import tools from "../assets/Tools.jpg"
 
@@ -12,7 +11,7 @@ const About = () => {
   // Estados para controlar la visibilidad de los textos adicionales
   const [showMore1, setShowMore1] = useState(false);
   const [showMore2, setShowMore2] = useState(false);
-  const [showMore3, setShowMore3] = useState(false);
+  
 
   return (
     <div className="about-container">
