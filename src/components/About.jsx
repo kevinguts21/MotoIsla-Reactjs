@@ -4,7 +4,7 @@ import motoislalogo from "../assets/motoislalogo.jpg";
 import PlaceIcon from "@mui/icons-material/Place";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
-import repair from "../assets/Repair.jpg"
+import repair from "../assets/repair.jpg"
 import tools from "../assets/Tools.jpg"
 
 const About = () => {
