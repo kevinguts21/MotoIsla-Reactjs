@@ -10,9 +10,9 @@ import ProductDetail from "./components/ProductDetail";
 import Cart from "./components/Cart/Cart";
 import { CartProvider } from "./components/Cart/CartContext";
 import { Toaster } from "react-hot-toast";
-import axios from "axios";
 import { useMediaQuery } from "@mui/material";
 import ImagenSlide from "./components/ImagenSlide"; 
+import AxiosInstance from "./components/Axios"; 
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -24,19 +24,26 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/productos/")
-      .then((response) => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const response = await AxiosInstance.get("/productos/"); 
         setProducts(response.data);
         setFilteredProducts(response.data);
-      })
-      .catch((error) => console.error("Error fetching products:", error));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   const handleSearch = (query) => {
-    setSearchQuery(query); // Save query to state
+    setSearchQuery(query);
     setLoading(true);
-    navigate("/"); // Redirect to Home
+    navigate("/"); 
   };
 
   useEffect(() => {
@@ -52,8 +59,8 @@ function App() {
   }, [searchQuery, products]);
 
   const handleClearSearch = () => {
-    setSearchQuery(""); // Clear the search query
-    setFilteredProducts(products); // Reset the filtered products
+    setSearchQuery("");
+    setFilteredProducts(products);
   };
 
   return (
@@ -68,7 +75,6 @@ function App() {
       >
         <Toaster position="top-center" />
 
-        {/* Render mobile or desktop navbar */}
         <Navbar
           onSearch={handleSearch}
           onClearSearch={handleClearSearch}
@@ -78,14 +84,13 @@ function App() {
           sx={{ backgroundColor: "#232F3F", minHeight: "40px" }}
         />
 
-        {/* Main Routes */}
         <div style={{ flex: 1 }}>
           <Routes>
             <Route
               path="/"
               element={
                 <>
-                  <ImagenSlide /> {/* Componente ImagenSlide agregado aquí */}
+                  <ImagenSlide />
                   <Home
                     filteredProducts={filteredProducts}
                     loading={loading}
@@ -105,7 +110,6 @@ function App() {
           </Routes>
         </div>
 
-        {/* Render footer */}
         <Footer mobileView={isMobile} desktopView={!isMobile} />
       </div>
     </CartProvider>
