@@ -43,11 +43,11 @@ const SortAndFilterControls = ({
     handleCloseDrawer();
   };
 
-  const handleApplyFilters = (filteredProducts) => {
-    setFilteredProducts(filteredProducts);
+  const handleApplyFilters = (filters) => {
+    onApplyFilters(filters);
+    handleCloseDrawer(); // Cierra el drawer después de aplicar filtros
   };
 
-  
   return (
     <Box
       sx={{

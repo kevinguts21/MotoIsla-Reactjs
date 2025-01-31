@@ -10,7 +10,7 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-import axios from "axios";
+import AxiosInstance from "./Axios"; // 
 import CustomDrawer from "./CustomDrawer";
 import { useMediaQuery } from "@mui/material";
 
@@ -48,7 +48,7 @@ const SecondaryNavbar = ({ setShowSlider }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/categorias/");
+        const response = await AxiosInstance.get("/categorias/");
         setCategories(response.data);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -83,9 +83,7 @@ const SecondaryNavbar = ({ setShowSlider }) => {
 
     if (categoryId) {
       try {
-        const response = await axios.get(
-          `http://localhost:8000/subcategorias/?categoria=${categoryId}`
-        );
+        const response = await AxiosInstance.get(`/subcategorias/?categoria=${categoryId}`);
         setSubCategories(response.data);
       } catch (error) {
         console.error("Error fetching subcategories:", error);

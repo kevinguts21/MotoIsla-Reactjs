@@ -11,6 +11,7 @@ import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
 import noResultsImage from "../assets/not.png";
 import AxiosInstance from "./Axios";
+import { Navigate } from "react-router-dom";
 
 const Home = () => {
   const [columns, setColumns] = useState(4);
@@ -52,6 +53,47 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const subcategoria = queryParams.get("subcategoria");
+    const categoria = queryParams.get("categoria");
+
+    console.log(
+      "🔎 URL Params - subcategoria:",
+      subcategoria,
+      "categoria:",
+      categoria
+    );
+
+    setIsLoading(true);
+
+    setTimeout(() => {
+      let filtered;
+      if (subcategoria) {
+        filtered = products.filter(
+          (product) => product.subcategoria?.id.toString() === subcategoria
+        );
+      } else if (categoria) {
+        filtered = products.filter(
+          (product) => product.categoria?.id.toString() === categoria
+        );
+      } else {
+        filtered = products;
+      }
+
+      console.log("✅ Productos filtrados obtenidos:", filtered);
+      setDisplayedProducts(filtered);
+      setIsLoading(false);
+    }, 500); // ✅ Simulación de carga ligera para evitar parpadeo
+  }, [location.search, products]);
+
+  useEffect(() => {
+    if (location.state?.productosFiltrados) {
+      setDisplayedProducts(location.state.productosFiltrados);
+      setCurrentPage(1);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
       setShowScrollToTop(scrollPosition > 100);
@@ -62,41 +104,6 @@ const Home = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const subcategoria = queryParams.get("subcategoria");
-    const categoria = queryParams.get("categoria");
-
-    if (subcategoria || categoria) {
-      setIsLoading(true);
-      const fetchFilteredProducts = async () => {
-        try {
-          let response;
-          if (subcategoria) {
-            response = await AxiosInstance.get(
-              `/productos/?subcategoria=${subcategoria}`
-            );
-          } else if (categoria) {
-            response = await AxiosInstance.get(
-              `/productos/?categoria=${categoria}`
-            );
-          } else {
-            response = await AxiosInstance.get("/productos/");
-          }
-          setDisplayedProducts(response.data);
-        } catch (error) {
-          console.error("Error fetching filtered products:", error);
-        } finally {
-          setIsLoading(false);
-        }
-      };
-
-      fetchFilteredProducts();
-    } else {
-      setDisplayedProducts(products);
-    }
-  }, [location.search, products]);
 
   const sortProducts = () => {
     if (sortOption === "low-to-high") {
@@ -153,13 +160,20 @@ const Home = () => {
   const resetFilters = () => {
     setDisplayedProducts(products);
     setCurrentPage(1);
+    Navigate("/");
+  };
+
+  const handleFilterUpdate = (filters) => {
+    const filteredProducts = applyFilters(filters);
+    setDisplayedProducts(filteredProducts);
+    setCurrentPage(1);
   };
 
   return (
     <Box sx={{ padding: 2 }}>
       {isLoading && <LoadingOverlay />}
 
-      <Box sx={{ marginBottom: 2.5 }}>
+      <Box sx={{ marginBottom: 2.5, marginRight: 2.6 }}>
         <SortAndFilterControls
           currency={currency}
           handleCurrencyChange={handleCurrencyChange}
@@ -167,8 +181,9 @@ const Home = () => {
           debouncedSort={debouncedSort}
           columns={columns}
           setColumns={setColumns}
-          paginatedProducts={paginatedProducts || []}
-          displayedProducts={displayedProducts || []}
+          paginatedProducts={paginatedProducts}
+          displayedProducts={displayedProducts}
+          onApplyFilters={handleFilterUpdate}
         />
 
         {displayedProducts.length !== products.length && (
@@ -187,27 +202,34 @@ const Home = () => {
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
-        {paginatedProducts.length > 0 ? (
+        {isLoading ? (
+          <CircularProgress />
+        ) : displayedProducts.length > 0 ? (
           <Grid
             container
             spacing={3}
             sx={{ maxWidth: "1200px", marginX: "auto" }}
           >
-            {paginatedProducts.map((product) => (
-              <Grid
-                item
-                xs={12}
-                sm={6}
-                md={columns === 3 ? 4 : 3}
-                key={product.id}
-              >
-                <ProductCard
-                  product={product}
-                  currency={currency}
-                  convertPrice={convertPrice}
-                />
-              </Grid>
-            ))}
+            {displayedProducts
+              .slice(
+                (currentPage - 1) * productsPerPage,
+                currentPage * productsPerPage
+              )
+              .map((product) => (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={columns === 3 ? 4 : 3}
+                  key={product.id}
+                >
+                  <ProductCard
+                    product={product}
+                    currency={currency}
+                    convertPrice={convertPrice}
+                  />
+                </Grid>
+              ))}
           </Grid>
         ) : (
           <Box
@@ -215,13 +237,22 @@ const Home = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              justifyContent: "center",
+              height: "50vh",
+              textAlign: "center",
             }}
           >
             <Box
               component="img"
               src={noResultsImage}
               alt="Sin resultados"
-              sx={{ width: "200px", height: "auto", marginBottom: 2 }}
+              sx={{
+                width: "200px",
+                height: "auto",
+                marginBottom: 2,
+                filter: "blur(0.5px)",
+                opacity: 0.7,
+              }}
             />
             <Typography color="gray">
               No hay resultados que coincidan con la búsqueda.

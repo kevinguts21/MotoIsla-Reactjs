@@ -17,6 +17,7 @@ import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import proof from "../assets/proof.jpg";
+import { useNavigate } from "react-router-dom";
 
 const CustomDrawer = ({
   open,
@@ -29,10 +30,19 @@ const CustomDrawer = ({
   loading,
 }) => {
   const [expandedCategory, setExpandedCategory] = useState(null);
+  const navigate = useNavigate();
 
   const handleCategoryClick = (categoryId) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
     onCategoryChange(categoryId); // Fetch subcategories for the selected category
+  };
+
+  const handleSubCategoryChange = (subCategoryId) => {
+    if (subCategoryId) {
+      onSubCategoryChange(subCategoryId); // ✅ Llamar a la función como en el viejo CustomDrawer
+      navigate(`/?subcategoria=${subCategoryId}`); // ✅ También actualizar la URL
+      onClose(); // ✅ Cerrar el drawer
+    }
   };
 
   return (
@@ -44,7 +54,7 @@ const CustomDrawer = ({
           display: "flex",
           flexDirection: "column",
           height: "100vh",
-          backgroundImage: `url(${proof})`,  
+          backgroundImage: `url(${proof})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
@@ -99,9 +109,7 @@ const CustomDrawer = ({
           {categories.map((category) => (
             <div key={category.id}>
               <ListItem button onClick={() => handleCategoryClick(category.id)}>
-                <ListItemText
-                  primary={<b>{category.nombre}</b>} 
-                />
+                <ListItemText primary={<b>{category.nombre}</b>} />
                 {expandedCategory === category.id ? (
                   <ExpandLessIcon />
                 ) : (
@@ -120,7 +128,7 @@ const CustomDrawer = ({
                     backgroundColor: "#ffffffcc", // Semi-transparent white background for subcategories
                     backdropFilter: "blur(5px)", // Blur effect
                     borderRadius: "4px", // Rounded corners
-                    paddingLeft: "16px", 
+                    paddingLeft: "16px",
                   }}
                 >
                   <List component="div" disablePadding>

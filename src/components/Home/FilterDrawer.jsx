@@ -126,6 +126,7 @@ const FilterDrawer = ({ onClose }) => {
     if (productosConPrecio.length > 0) {
       navigate("/", { state: { productosFiltrados: productosConPrecio } });
 
+
       // Close the drawer only if there are matching products
       onClose();
 
