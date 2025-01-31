@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  CircularProgress,
-  Grid,
-  Typography,
-  Button,
-  Divider,
-} from "@mui/material";
+import { Box, CircularProgress, Grid, Typography, Button } from "@mui/material";
 import CleaningServicesOutlinedIcon from "@mui/icons-material/CleaningServicesOutlined";
 import { useMediaQuery } from "@mui/material";
 import { debounce } from "lodash";
@@ -17,8 +10,9 @@ import LoadingOverlay from "./Home/LoadingOverlay";
 import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
 import noResultsImage from "../assets/not.png";
+import AxiosInstance from "./Axios";
 
-const Home = ({ filteredProducts, loading }) => {
+const Home = () => {
   const [columns, setColumns] = useState(4);
   const [currency, setCurrency] = useState(
     () => localStorage.getItem("currency") || "USD"
@@ -28,19 +22,34 @@ const Home = ({ filteredProducts, loading }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [sortOption, setSortOption] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [displayedProducts, setDisplayedProducts] = useState(filteredProducts);
+  const [products, setProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const productsPerPage = isMobile ? 10 : 9; // Ajuste para móvil o escritorio
+  const productsPerPage = isMobile ? 10 : 9;
   const location = useLocation();
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   useEffect(() => {
-    if (location.state?.productosFiltrados) {
-      setDisplayedProducts(location.state.productosFiltrados);
-      setCurrentPage(1); // Reinicia la paginación si se reciben nuevos productos
-    }
-  }, [location.state]);
+    const fetchProducts = async () => {
+      setIsLoading(true);
+      try {
+        const response = await AxiosInstance.get("/productos/");
+        setProducts(response.data);
+        setDisplayedProducts(response.data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,35 +63,40 @@ const Home = ({ filteredProducts, loading }) => {
     };
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const subcategoria = queryParams.get("subcategoria");
     const categoria = queryParams.get("categoria");
 
-    setIsLoading(true);
+    if (subcategoria || categoria) {
+      setIsLoading(true);
+      const fetchFilteredProducts = async () => {
+        try {
+          let response;
+          if (subcategoria) {
+            response = await AxiosInstance.get(
+              `/productos/?subcategoria=${subcategoria}`
+            );
+          } else if (categoria) {
+            response = await AxiosInstance.get(
+              `/productos/?categoria=${categoria}`
+            );
+          } else {
+            response = await AxiosInstance.get("/productos/");
+          }
+          setDisplayedProducts(response.data);
+        } catch (error) {
+          console.error("Error fetching filtered products:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-    setTimeout(() => {
-      let filtered;
-      if (subcategoria) {
-        filtered = filteredProducts.filter(
-          (product) => product.subcategoria?.id.toString() === subcategoria
-        );
-      } else if (categoria) {
-        filtered = filteredProducts.filter(
-          (product) => product.categoria?.id.toString() === categoria
-        );
-      } else {
-        filtered = filteredProducts;
-      }
-
-      setDisplayedProducts(filtered);
-      setIsLoading(false);
-    }, 1000);
-  }, [location.search, filteredProducts]);
+      fetchFilteredProducts();
+    } else {
+      setDisplayedProducts(products);
+    }
+  }, [location.search, products]);
 
   const sortProducts = () => {
     if (sortOption === "low-to-high") {
@@ -137,33 +151,15 @@ const Home = ({ filteredProducts, loading }) => {
   const debouncedSort = debounce((option) => setSortOption(option), 300);
 
   const resetFilters = () => {
-    setDisplayedProducts(filteredProducts);
-    setCurrentPage(1); // Reinicia la paginación
+    setDisplayedProducts(products);
+    setCurrentPage(1);
   };
 
   return (
     <Box sx={{ padding: 2 }}>
-      {isLoading && (
-        <Box
-          sx={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0,0,0,.5)",
-            zIndex: 9999,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backdropFilter: "blur(5px)",
-          }}
-        >
-          <CircularProgress size={80} sx={{ color: "#fff" }} />
-        </Box>
-      )}
+      {isLoading && <LoadingOverlay />}
 
-      <Box sx={{ marginBottom: 2.5,marginRight:"25px" }}>
+      <Box sx={{ marginBottom: 2.5 }}>
         <SortAndFilterControls
           currency={currency}
           handleCurrencyChange={handleCurrencyChange}
@@ -171,29 +167,18 @@ const Home = ({ filteredProducts, loading }) => {
           debouncedSort={debouncedSort}
           columns={columns}
           setColumns={setColumns}
-          paginatedProducts={paginatedProducts}
-          displayedProducts={displayedProducts}
+          paginatedProducts={paginatedProducts || []}
+          displayedProducts={displayedProducts || []}
         />
-        
-        {displayedProducts.length !== filteredProducts.length && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 1,
-            }}
-          >
+
+        {displayedProducts.length !== products.length && (
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 1 }}>
             <Button
               variant="outlined"
               color="error"
               onClick={resetFilters}
               startIcon={<CleaningServicesOutlinedIcon />}
-              sx={{
-                textTransform: "none",
-                fontSize: "0.9rem",
-                borderRadius: "20px",
-                paddingX: 2,
-              }}
+              sx={{ textTransform: "none", fontSize: "0.9rem" }}
             >
               Limpiar filtros
             </Button>
@@ -202,9 +187,7 @@ const Home = ({ filteredProducts, loading }) => {
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
-        {loading ? (
-          <CircularProgress />
-        ) : paginatedProducts.length > 0 ? (
+        {paginatedProducts.length > 0 ? (
           <Grid
             container
             spacing={3}
@@ -232,22 +215,13 @@ const Home = ({ filteredProducts, loading }) => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              justifyContent: "center",
-              height: "50vh",
-              textAlign: "center",
             }}
           >
             <Box
               component="img"
               src={noResultsImage}
               alt="Sin resultados"
-              sx={{
-                width: "200px",
-                height: "auto",
-                marginBottom: 2,
-                filter: "blur(0.5px)",
-                opacity: 0.7,
-              }}
+              sx={{ width: "200px", height: "auto", marginBottom: 2 }}
             />
             <Typography color="gray">
               No hay resultados que coincidan con la búsqueda.
