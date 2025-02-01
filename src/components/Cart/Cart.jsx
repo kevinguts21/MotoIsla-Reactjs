@@ -173,7 +173,9 @@ const Cart = () => {
                       return (
                         <Link
                           to={`/product/${productData.id}`}
-                          style={{ textDecoration: "none" }}
+                          style={{
+                            width: "350px"
+                          }}
                         >
                           <img
                             src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
@@ -338,7 +340,9 @@ const Cart = () => {
                     return (
                       <Link
                         to={`/product/${productData.id}`}
-                        style={{ textDecoration: "none" }}
+                        style={{
+                          width: "350px",
+                        }}
                       >
                         <img
                           src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
