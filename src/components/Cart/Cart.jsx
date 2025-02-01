@@ -118,7 +118,7 @@ const Cart = () => {
         </Box>
       ) : (
         <Box className="product-list">
-          {cart.map((item) =>
+         
             isMobile ? (
               <Box
                 key={item.id}
@@ -439,7 +439,7 @@ const Cart = () => {
                 </Box>
               </Box>
             )
-          )}
+          
         </Box>
       )}
       {cart.length >= 1 && (
