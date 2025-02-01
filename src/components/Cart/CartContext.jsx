@@ -6,12 +6,11 @@ export const CartContext = createContext();
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState(() => {
     try {
-      // Recuperar el carrito de la sesión o inicializarlo vacío
       const savedCart = sessionStorage.getItem("cart");
       return savedCart ? JSON.parse(savedCart) : [];
     } catch (error) {
       console.error("Error parsing cart from sessionStorage:", error);
-      return [];
+      return []; // 🔥 Siempre devolver un array
     }
   });
 
@@ -65,9 +64,10 @@ export const CartProvider = ({ children }) => {
 
   // Vaciar el carrito
   const clearCart = () => {
-    sessionStorage.removeItem("cart"); // ✅ Borra la sesión
-    setCart([]); // ✅ Limpia el estado
+    sessionStorage.removeItem("cart");
+    setCart([]); // 🔥 Siempre mantener `cart` como un array
   };
+  
 
   // Obtener el total de productos en el carrito
   const getCartTotal = () => {

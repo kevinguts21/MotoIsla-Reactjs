@@ -89,7 +89,8 @@ const Cart = () => {
         Importe Total: {totalAmount} CUP
       </Typography>
 
-      {cart.length === 0 ? (
+      {cart?.length > 0 ? (
+  cart.map((item) => {
         <Box className="empty-cart">
           <img
             src={emptyCartImage}
@@ -115,7 +116,7 @@ const Cart = () => {
               Ir a todos los productos
             </Link>
           </Button>
-        </Box>
+        </Box>})
       ) : (
         <Box className="product-list">
           {cart.map((item) => {
