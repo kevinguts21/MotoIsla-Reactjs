@@ -173,15 +173,13 @@ const Cart = () => {
                       return (
                         <Link
                           to={`/product/${productData.id}`}
-                          style={{
-                            width: "350px",
-                          }}
+                          
                         >
                           <img
                             src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
                             alt={productData.nombre || "Producto sin nombre"}
                             style={{
-                              width: "100px",
+                              width: "80px",
                               height: "80px",
                               objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
                               borderRadius: "5px",
@@ -348,7 +346,7 @@ const Cart = () => {
                         src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
                         alt={productData.nombre || "Producto sin nombre"}
                         style={{
-                          width: "80px",
+                          width: "100px",
                           height: "80px",
                           objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
                           borderRadius: "5px",
