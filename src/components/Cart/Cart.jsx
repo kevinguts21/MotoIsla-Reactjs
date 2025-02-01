@@ -54,8 +54,6 @@ const Cart = () => {
     0
   );
 
-  const imageUrl = `${AxiosInstance.defaults.baseURL}${item.imagen}`;
-
   return (
     <Box className="cart-container">
       <Toaster />
@@ -151,21 +149,45 @@ const Cart = () => {
                       marginRight: "10px",
                     }}
                   >
-                    <Link
-                      to={`/product/${productData.id}`}
-                      style={{ textDecoration: "none" }}
-                    >
-                      <img
-                        src={productData.imagen}
-                        alt={productData.nombre}
-                        sx={{
-                          width: "100px",
-                          height: "80px",
-                          objectFit: "contain",
-                          borderRadius: "5px",
-                        }}
-                      />
-                    </Link>
+                    {cart.map((item) => {
+                      const [productData, setProductData] = useState({});
+
+                      useEffect(() => {
+                        const fetchProduct = async () => {
+                          try {
+                            const response = await AxiosInstance.get(
+                              `/productos/${item.id}/`
+                            );
+                            setProductData(response.data);
+                          } catch (error) {
+                            console.error(
+                              "Error obteniendo el producto:",
+                              error
+                            );
+                          }
+                        };
+
+                        fetchProduct();
+                      }, [item.id]);
+
+                      return (
+                        <Link
+                          to={`/product/${productData.id}`}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <ProductImage
+                            src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
+                            alt={productData.nombre || "Producto sin nombre"}
+                            sx={{
+                              width: "100px",
+                              height: "80px",
+                              objectFit: "contain",
+                              borderRadius: "5px",
+                            }}
+                          />
+                        </Link>
+                      );
+                    })}
                   </Box>
                   <Box
                     sx={{
@@ -295,21 +317,42 @@ const Cart = () => {
                     gap: 2,
                   }}
                 >
-                  <Link
-                    to={`/product/${productData.id}`}
-                    style={{ textDecoration: "none" }}
-                  >
-                    <img
-                      src={productData.imagen}
-                      alt={productData.nombre}
-                      sx={{
-                        width: "100px",
-                        height: "80px",
-                        objectFit: "contain",
-                        borderRadius: "5px",
-                      }}
-                    />
-                  </Link>
+                  {cart.map((item) => {
+                    const [productData, setProductData] = useState({});
+
+                    useEffect(() => {
+                      const fetchProduct = async () => {
+                        try {
+                          const response = await AxiosInstance.get(
+                            `/productos/${item.id}/`
+                          );
+                          setProductData(response.data);
+                        } catch (error) {
+                          console.error("Error obteniendo el producto:", error);
+                        }
+                      };
+
+                      fetchProduct();
+                    }, [item.id]);
+
+                    return (
+                      <Link
+                        to={`/product/${productData.id}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <ProductImage
+                          src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
+                          alt={productData.nombre || "Producto sin nombre"}
+                          sx={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "contain",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      </Link>
+                    );
+                  })}
 
                   <Box sx={{ width: "480px", alignItems: "center" }}>
                     <Typography sx={{ fontWeight: "bold" }}>
