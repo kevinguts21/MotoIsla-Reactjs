@@ -88,9 +88,125 @@ const Cart = () => {
       >
         Importe Total: {totalAmount} CUP
       </Typography>
-
       {cart?.length > 0 ? (
-  cart.map((item) => {
+        cart.map((item) => {
+          const [productData, setProductData] = useState({});
+
+          useEffect(() => {
+            const fetchProduct = async () => {
+              try {
+                const response = await AxiosInstance.get(
+                  `/productos/${item.id}/`
+                );
+                setProductData(response.data);
+              } catch (error) {
+                console.error("Error obteniendo el producto:", error);
+              }
+            };
+
+            fetchProduct();
+          }, [item.id]);
+
+          return (
+            <Box
+              key={item.id}
+              className="product-item"
+              sx={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                padding: "10px",
+                gap: 2,
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              {/* 📌 IMAGEN DEL PRODUCTO */}
+              <Box
+                sx={{
+                  flex: "0 0 auto",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Link
+                  to={`/product/${productData.id}`}
+                  style={{ width: isMobile ? "100%" : "350px" }}
+                >
+                  <img
+                    src={productData.imagen }
+                    alt={productData.nombre || "Producto sin nombre"}
+                    style={{
+                      width: "100px",
+                      height: "80px",
+                      objectFit: "contain",
+                      borderRadius: "5px",
+                    }}
+                  />
+                </Link>
+              </Box>
+
+              {/* 📌 INFORMACIÓN DEL PRODUCTO */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  padding: "10px",
+                  gap: "5px",
+                  width: "100%",
+                }}
+              >
+                <Typography sx={{ fontWeight: "bold", fontSize: "1.3rem" }}>
+                  {item.nombre}
+                </Typography>
+                <Typography sx={{ color: "gray" }}>
+                  Precio Unitario: {item.precio} CUP
+                </Typography>
+                <Typography sx={{ color: "gray" }}>
+                  Importe Total: {item.precio * item.quantity} CUP
+                </Typography>
+              </Box>
+
+              {/* 📌 CONTROLES DE CANTIDAD Y ELIMINACIÓN */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+                  <IconButton
+                    onClick={() =>
+                      updateQuantity(item.id, Math.max(item.quantity - 1, 1))
+                    }
+                    sx={{ color: "grey", "&:hover": { color: "red" } }}
+                  >
+                    <RemoveIcon />
+                  </IconButton>
+                  <Typography>{item.quantity}</Typography>
+                  <IconButton
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    sx={{ color: "grey", "&:hover": { color: "green" } }}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Box>
+                <IconButton
+                  onClick={() => handleRemoveItem(item.id)}
+                  sx={{ color: "#D32F2F", "&:hover": { color: "red" } }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            </Box>
+          );
+        })
+      ) : (
+        // ✅ Ahora el Empty Cart se renderiza correctamente cuando no hay productos en el carrito
         <Box className="empty-cart">
           <img
             src={emptyCartImage}
@@ -102,161 +218,153 @@ const Cart = () => {
           <Typography color="gray" variant="body1">
             Tu carrito está vacío.
           </Typography>
-          <Button
-            variant="contained"
-            color="error"
-            sx={{
-              borderRadius: "111px",
-              "&:focus": {
-                outline: "none",
-              },
-            }}
-          >
+          <Button variant="contained" color="error">
             <Link to="/" className="home-link">
               Ir a todos los productos
             </Link>
           </Button>
-        </Box>})
-      ) : (
-        <Box className="product-list">
-          {cart.map((item) => {
-            const [productData, setProductData] = useState({});
+        </Box>
+      )}
+       : (
+      <Box className="product-list">
+        {cart.map((item) => {
+          const [productData, setProductData] = useState({});
 
-            useEffect(() => {
-              const fetchProduct = async () => {
-                try {
-                  const response = await AxiosInstance.get(
-                    `/productos/${item.id}/`
-                  );
-                  setProductData(response.data);
-                } catch (error) {
-                  console.error("Error obteniendo el producto:", error);
-                }
-              };
+          useEffect(() => {
+            const fetchProduct = async () => {
+              try {
+                const response = await AxiosInstance.get(
+                  `/productos/${item.id}/`
+                );
+                setProductData(response.data);
+              } catch (error) {
+                console.error("Error obteniendo el producto:", error);
+              }
+            };
 
-              fetchProduct();
-            }, [item.id]);
+            fetchProduct();
+          }, [item.id]);
 
-            return (
+          return (
+            <Box
+              key={item.id}
+              className="product-item"
+              sx={{
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                padding: "10px",
+                gap: 2,
+                border: "1px solid #ddd",
+                borderRadius: "10px",
+                boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              {/* 📌 IMAGEN DEL PRODUCTO */}
               <Box
-                key={item.id}
-                className="product-item"
                 sx={{
+                  flex: "0 0 auto",
                   display: "flex",
-                  flexDirection: isMobile ? "column" : "row",
-                  padding: "10px",
-                  gap: 2,
-                  border: "1px solid #ddd",
-                  borderRadius: "10px",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginRight: isMobile ? "0" : "10px",
                 }}
               >
-                {/* 📌 IMAGEN DEL PRODUCTO */}
-                <Box
-                  sx={{
-                    flex: "0 0 auto",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginRight: isMobile ? "0" : "10px",
-                  }}
+                <Link
+                  to={`/product/${productData.id}`}
+                  style={{ width: isMobile ? "100%" : "350px" }}
                 >
-                  <Link
-                    to={`/product/${productData.id}`}
-                    style={{ width: isMobile ? "100%" : "350px" }}
-                  >
-                    <img
-                      src={productData.imagen || "/placeholder.jpg"}
-                      alt={productData.nombre || "Producto sin nombre"}
-                      style={{
-                        width: isMobile ? "100px" : "100px",
-                        height: isMobile ? "100px" : "80px",
-                        objectFit: "contain",
-                        borderRadius: "5px",
-                      }}
-                    />
-                  </Link>
-                </Box>
-
-                {/* 📌 INFORMACIÓN DEL PRODUCTO */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: isMobile ? "center" : "flex-start",
-                    padding: "10px",
-                    gap: "5px",
-                    width: "100%",
-                  }}
-                >
-                  <Typography
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "1.3rem",
-                      textAlign: isMobile ? "center" : "left",
+                  <img
+                    src={productData.imagen || "/placeholder.jpg"}
+                    alt={productData.nombre || "Producto sin nombre"}
+                    style={{
+                      width: isMobile ? "100px" : "100px",
+                      height: isMobile ? "100px" : "80px",
+                      objectFit: "contain",
+                      borderRadius: "5px",
                     }}
-                  >
-                    {item.nombre}
-                  </Typography>
+                  />
+                </Link>
+              </Box>
 
-                  <Typography sx={{ color: "gray" }}>
-                    Precio Unitario: {item.precio} CUP
-                  </Typography>
-                  <Typography sx={{ color: "gray" }}>
-                    Importe Total: {item.precio * item.quantity} CUP
-                  </Typography>
-                </Box>
-
-                {/* 📌 CONTROLES DE CANTIDAD Y ELIMINACIÓN */}
-                <Box
+              {/* 📌 INFORMACIÓN DEL PRODUCTO */}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: isMobile ? "center" : "flex-start",
+                  padding: "10px",
+                  gap: "5px",
+                  width: "100%",
+                }}
+              >
+                <Typography
                   sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    width: "100%",
+                    fontWeight: "bold",
+                    fontSize: "1.3rem",
+                    textAlign: isMobile ? "center" : "left",
                   }}
                 >
-                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-                    <IconButton
-                      onClick={() =>
-                        updateQuantity(item.id, Math.max(item.quantity - 1, 1))
-                      }
-                      sx={{
-                        color: "grey",
-                        "&:hover": { color: "red" },
-                        "&:focus": { outline: "none", boxShadow: "none" },
-                      }}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography>{item.quantity}</Typography>
-                    <IconButton
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      sx={{
-                        color: "grey",
-                        "&:hover": { color: "green" },
-                        "&:focus": { outline: "none", boxShadow: "none" },
-                      }}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                  </Box>
+                  {item.nombre}
+                </Typography>
+
+                <Typography sx={{ color: "gray" }}>
+                  Precio Unitario: {item.precio} CUP
+                </Typography>
+                <Typography sx={{ color: "gray" }}>
+                  Importe Total: {item.precio * item.quantity} CUP
+                </Typography>
+              </Box>
+
+              {/* 📌 CONTROLES DE CANTIDAD Y ELIMINACIÓN */}
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                   <IconButton
-                    onClick={() => handleRemoveItem(item.id)}
+                    onClick={() =>
+                      updateQuantity(item.id, Math.max(item.quantity - 1, 1))
+                    }
                     sx={{
-                      color: "#D32F2F",
+                      color: "grey",
                       "&:hover": { color: "red" },
                       "&:focus": { outline: "none", boxShadow: "none" },
                     }}
                   >
-                    <DeleteIcon />
+                    <RemoveIcon />
+                  </IconButton>
+                  <Typography>{item.quantity}</Typography>
+                  <IconButton
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    sx={{
+                      color: "grey",
+                      "&:hover": { color: "green" },
+                      "&:focus": { outline: "none", boxShadow: "none" },
+                    }}
+                  >
+                    <AddIcon />
                   </IconButton>
                 </Box>
+                <IconButton
+                  onClick={() => handleRemoveItem(item.id)}
+                  sx={{
+                    color: "#D32F2F",
+                    "&:hover": { color: "red" },
+                    "&:focus": { outline: "none", boxShadow: "none" },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Box>
-            );
-          })}
-        </Box>
-      )}
+            </Box>
+          );
+        })}
+      </Box>
+      )
       {cart.length >= 1 && (
         <Box sx={{ marginTop: 2 }}>
           <GeneratePDFAndPurchase />
