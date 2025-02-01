@@ -65,7 +65,8 @@ export const CartProvider = ({ children }) => {
 
   // Vaciar el carrito
   const clearCart = () => {
-    setCart([]);
+    sessionStorage.removeItem("cart"); // ✅ Borra la sesión
+    setCart([]); // ✅ Limpia el estado
   };
 
   // Obtener el total de productos en el carrito
