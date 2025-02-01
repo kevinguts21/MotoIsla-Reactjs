@@ -175,7 +175,7 @@ const Cart = () => {
                           to={`/product/${productData.id}`}
                           style={{ textDecoration: "none" }}
                         >
-                          <ProductImage
+                          <img
                             src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
                             alt={productData.nombre || "Producto sin nombre"}
                             sx={{
@@ -340,7 +340,7 @@ const Cart = () => {
                         to={`/product/${productData.id}`}
                         style={{ textDecoration: "none" }}
                       >
-                        <ProductImage
+                        <img
                           src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
                           alt={productData.nombre || "Producto sin nombre"}
                           sx={{
