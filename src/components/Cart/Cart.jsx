@@ -155,7 +155,7 @@ const Cart = () => {
                         width: "350px",
                       }}
                     >
-                      <ProductImage
+                      <img
                         src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
                         alt={item.nombre}
                         style={{
@@ -300,7 +300,7 @@ const Cart = () => {
                       width: "350px",
                     }}
                   >
-                    <ProductImage
+                    <img
                       src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
                       alt={item.nombre}
                       style={{
