@@ -343,7 +343,7 @@ const Cart = () => {
                       }}
                     >
                       <img
-                        src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
+                        src={productData.imagen} // Si no hay imagen, usa una por defecto
                         alt={productData.nombre || "Producto sin nombre"}
                         style={{
                           width: "100px",
