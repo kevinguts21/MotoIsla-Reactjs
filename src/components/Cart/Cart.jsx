@@ -118,14 +118,31 @@ const Cart = () => {
         </Box>
       ) : (
         <Box className="product-list">
-         
-            isMobile ? (
+          {cart.map((item) => {
+            const [productData, setProductData] = useState({});
+
+            useEffect(() => {
+              const fetchProduct = async () => {
+                try {
+                  const response = await AxiosInstance.get(
+                    `/productos/${item.id}/`
+                  );
+                  setProductData(response.data);
+                } catch (error) {
+                  console.error("Error obteniendo el producto:", error);
+                }
+              };
+
+              fetchProduct();
+            }, [item.id]);
+
+            return (
               <Box
                 key={item.id}
                 className="product-item"
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
+                  flexDirection: isMobile ? "column" : "row",
                   padding: "10px",
                   gap: 2,
                   border: "1px solid #ddd",
@@ -133,125 +150,80 @@ const Cart = () => {
                   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
                 }}
               >
+                {/* 📌 IMAGEN DEL PRODUCTO */}
+                <Box
+                  sx={{
+                    flex: "0 0 auto",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginRight: isMobile ? "0" : "10px",
+                  }}
+                >
+                  <Link
+                    to={`/product/${productData.id}`}
+                    style={{ width: isMobile ? "100%" : "350px" }}
+                  >
+                    <img
+                      src={productData.imagen || "/placeholder.jpg"}
+                      alt={productData.nombre || "Producto sin nombre"}
+                      style={{
+                        width: isMobile ? "100px" : "100px",
+                        height: isMobile ? "100px" : "80px",
+                        objectFit: "contain",
+                        borderRadius: "5px",
+                      }}
+                    />
+                  </Link>
+                </Box>
+
+                {/* 📌 INFORMACIÓN DEL PRODUCTO */}
                 <Box
                   sx={{
                     display: "flex",
-                    flexDirection: "row",
-                    alignItems: "flex-start",
+                    flexDirection: "column",
+                    alignItems: isMobile ? "center" : "flex-start",
+                    padding: "10px",
+                    gap: "5px",
+                    width: "100%",
                   }}
                 >
-                  <Box
+                  <Typography
                     sx={{
-                      flex: "0 0 auto",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginRight: "10px",
+                      fontWeight: "bold",
+                      fontSize: "1.3rem",
+                      textAlign: isMobile ? "center" : "left",
                     }}
                   >
-                    {cart.map((item) => {
-                      const [productData, setProductData] = useState({});
+                    {item.nombre}
+                  </Typography>
 
-                      useEffect(() => {
-                        const fetchProduct = async () => {
-                          try {
-                            const response = await AxiosInstance.get(
-                              `/productos/${item.id}/`
-                            );
-                            setProductData(response.data);
-                          } catch (error) {
-                            console.error(
-                              "Error obteniendo el producto:",
-                              error
-                            );
-                          }
-                        };
-
-                        fetchProduct();
-                      }, [item.id]);
-
-                      return (
-                        <Link
-                          to={`/product/${productData.id}`}
-                          
-                        >
-                          <img
-                            src={productData.imagen } // Si no hay imagen, usa una por defecto
-                            alt={productData.nombre || "Producto sin nombre"}
-                            style={{
-                              width: "80px",
-                              height: "80px",
-                              objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
-                              borderRadius: "5px",
-                            }}
-                          />
-                        </Link>
-                      );
-                    })}
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-start",
-                      padding: "10px",
-                      gap: "5px",
-                      width: "100%",
-                    }}
-                  >
-                    <Typography
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: "1.3rem",
-                        textAlign: "left",
-                      }}
-                    >
-                      {item.nombre}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "gray",
-                      }}
-                    >
-                      Precio Unitario: {item.precio} CUP
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "gray",
-                      }}
-                    >
-                      Importe Total: {item.precio * item.quantity} CUP
-                    </Typography>
-                  </Box>
+                  <Typography sx={{ color: "gray" }}>
+                    Precio Unitario: {item.precio} CUP
+                  </Typography>
+                  <Typography sx={{ color: "gray" }}>
+                    Importe Total: {item.precio * item.quantity} CUP
+                  </Typography>
                 </Box>
+
+                {/* 📌 CONTROLES DE CANTIDAD Y ELIMINACIÓN */}
                 <Box
                   sx={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    width: "100%",
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                    }}
-                  >
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <IconButton
                       onClick={() =>
                         updateQuantity(item.id, Math.max(item.quantity - 1, 1))
                       }
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "red" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <RemoveIcon />
@@ -261,14 +233,8 @@ const Cart = () => {
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "green",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "green" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <AddIcon />
@@ -277,169 +243,17 @@ const Cart = () => {
                   <IconButton
                     onClick={() => handleRemoveItem(item.id)}
                     sx={{
-                      marginLeft: "190px",
                       color: "#D32F2F",
-
-                      "&:hover": {
-                        color: "red",
-                      },
-                      "&:focus": {
-                        outline: "none",
-                        boxShadow: "none",
-                      },
+                      "&:hover": { color: "red" },
+                      "&:focus": { outline: "none", boxShadow: "none" },
                     }}
                   >
                     <DeleteIcon />
                   </IconButton>
                 </Box>
               </Box>
-            ) : (
-              <Box
-                key={item.id}
-                className="product-item-container"
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 2,
-                  padding: "8px",
-                  border: "1px solid #ddd",
-                  borderRadius: "20px",
-                  overflow: "auto",
-                }}
-              >
-                <Box
-                  className="product-item-desktop"
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 2,
-                  }}
-                >
-                  {cart.map((item) => {
-                    const [productData, setProductData] = useState({});
-
-                    useEffect(() => {
-                      const fetchProduct = async () => {
-                        try {
-                          const response = await AxiosInstance.get(
-                            `/productos/${item.id}/`
-                          );
-                          setProductData(response.data);
-                        } catch (error) {
-                          console.error("Error obteniendo el producto:", error);
-                        }
-                      };
-
-                      fetchProduct();
-                    }, [item.id]);
-
-                    return (
-                      <Link
-                      to={`/product/${productData.id}`}
-                      style={{
-                        width: "350px",
-                      }}
-                    >
-                      <img
-                        src={productData.imagen} // Si no hay imagen, usa una por defecto
-                        alt={productData.nombre || "Producto sin nombre"}
-                        style={{
-                          width: "100px",
-                          height: "80px",
-                          objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
-                          borderRadius: "5px",
-                        }}
-                      />
-                    </Link>
-                    
-                      
-                    
-                    );
-                  })}
-
-                  <Box sx={{ width: "480px", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>
-                      {item.nombre}
-                    </Typography>
-                  </Box>
-                  <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography>Precio Unitario</Typography>
-                    <Typography sx={{ color: "gray" }}>
-                      {item.precio} CUP
-                    </Typography>
-                  </Box>
-                  <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography>Importe Total</Typography>
-                    <Typography sx={{ color: "gray" }}>
-                      {item.precio * item.quantity} CUP
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <IconButton
-                      onClick={() =>
-                        updateQuantity(item.id, Math.max(item.quantity - 1, 1))
-                      }
-                      sx={{
-                        color: "grey",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
-                      }}
-                    >
-                      <RemoveIcon />
-                    </IconButton>
-                    <Typography>{item.quantity}</Typography>
-                    <IconButton
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      sx={{
-                        color: "grey",
-
-                        "&:hover": {
-                          color: "green",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
-                      }}
-                    >
-                      <AddIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleRemoveItem(item.id)}
-                      sx={{
-                        color: "#d32f2f",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
-                      }}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
-                </Box>
-              </Box>
-            )
-          
+            );
+          })}
         </Box>
       )}
       {cart.length >= 1 && (
