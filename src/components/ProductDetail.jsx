@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import ProductDetailDesktop from "./ProductDesktop";
 import ProductDetailMobile from "./ProductDetailMobile";
 import { CircularProgress, Typography } from "@mui/material";
-
+import AxiosInstance from "./Axios"; 
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -18,9 +17,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:8000/productos/${id}/`
-        );
+        const { data } = await AxiosInstance.get(`/productos/${id}/`);
         setProduct(data);
         setLoading(false);
       } catch (err) {
@@ -33,9 +30,8 @@ const ProductDetail = () => {
   }, [id]);
 
   const convertPrice = (price) => {
-    const exchangeRate = 320; // 1 USD = 320 CUP (example)
-    const convertedPrice = price * exchangeRate;
-    return convertedPrice.toLocaleString("en-US", {
+    const exchangeRate = 320; // 1 USD = 320 CUP (ejemplo)
+    return (price * exchangeRate).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
