@@ -23,6 +23,7 @@ import { Link } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./Cart.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import AxiosInstance from "../Axios";
 
 const Cart = () => {
   const { cart, clearCart, removeItem, updateQuantity } =
@@ -150,9 +151,7 @@ const Cart = () => {
                   >
                     <Link to={`/product/${item.id}`}>
                       <img
-                        src={`http://localhost:8000/media/Productos/${item.imagen
-                          .split("/")
-                          .pop()}`}
+                        src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
                         alt={item.nombre}
                         style={{
                           width: "80px",
@@ -183,7 +182,6 @@ const Cart = () => {
                     </Typography>
                     <Typography
                       sx={{
-                        
                         color: "gray",
                       }}
                     >
@@ -191,7 +189,6 @@ const Cart = () => {
                     </Typography>
                     <Typography
                       sx={{
-                        
                         color: "gray",
                       }}
                     >
@@ -299,9 +296,7 @@ const Cart = () => {
                     }}
                   >
                     <img
-                      src={`http://localhost:8000/media/Productos/${item.imagen
-                        .split("/")
-                        .pop()}`}
+                      src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
                       alt={item.nombre}
                       style={{
                         width: "100px",
@@ -316,17 +311,13 @@ const Cart = () => {
                     </Typography>
                   </Box>
                   <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography >
-                      Precio Unitario
-                    </Typography>
+                    <Typography>Precio Unitario</Typography>
                     <Typography sx={{ color: "gray" }}>
                       {item.precio} CUP
                     </Typography>
                   </Box>
                   <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography >
-                      Importe Total
-                    </Typography>
+                    <Typography>Importe Total</Typography>
                     <Typography sx={{ color: "gray" }}>
                       {item.precio * item.quantity} CUP
                     </Typography>
