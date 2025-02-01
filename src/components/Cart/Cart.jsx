@@ -1,4 +1,4 @@
-import React, { useContext, useState,  useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -174,16 +174,16 @@ const Cart = () => {
                         <Link
                           to={`/product/${productData.id}`}
                           style={{
-                            width: "350px"
+                            width: "350px",
                           }}
                         >
                           <img
                             src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
                             alt={productData.nombre || "Producto sin nombre"}
-                            sx={{
+                            style={{
                               width: "100px",
                               height: "80px",
-                              objectFit: "contain",
+                              objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
                               borderRadius: "5px",
                             }}
                           />
@@ -339,22 +339,25 @@ const Cart = () => {
 
                     return (
                       <Link
-                        to={`/product/${productData.id}`}
+                      to={`/product/${productData.id}`}
+                      style={{
+                        width: "350px",
+                      }}
+                    >
+                      <img
+                        src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
+                        alt={productData.nombre || "Producto sin nombre"}
                         style={{
-                          width: "350px",
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "contain", // ✅ Mantiene la imagen contenida dentro del tamaño
+                          borderRadius: "5px",
                         }}
-                      >
-                        <img
-                          src={productData.imagen || "/placeholder.jpg"} // Si no hay imagen, usa una por defecto
-                          alt={productData.nombre || "Producto sin nombre"}
-                          sx={{
-                            width: "80px",
-                            height: "80px",
-                            objectFit: "contain",
-                            borderRadius: "5px",
-                          }}
-                        />
-                      </Link>
+                      />
+                    </Link>
+                    
+                      
+                    
                     );
                   })}
 
