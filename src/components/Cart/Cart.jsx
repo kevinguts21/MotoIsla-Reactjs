@@ -54,6 +54,8 @@ const Cart = () => {
     0
   );
 
+  const imageUrl = `${AxiosInstance.defaults.baseURL}${item.imagen}`;
+
   return (
     <Box className="cart-container">
       <Toaster />
@@ -156,7 +158,7 @@ const Cart = () => {
                       }}
                     >
                       <img
-                        src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
+                        src={imageUrl}
                         alt={item.nombre}
                         style={{
                           width: "80px",
@@ -301,7 +303,7 @@ const Cart = () => {
                     }}
                   >
                     <img
-                      src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
+                      src={imageUrl}
                       alt={item.nombre}
                       style={{
                         width: "100px",
