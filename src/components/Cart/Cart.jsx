@@ -152,18 +152,17 @@ const Cart = () => {
                     }}
                   >
                     <Link
-                      to={`/product/${product.id}`}
-                      style={{
-                        width: "350px",
-                      }}
+                      to={`/product/${productData.id}`}
+                      style={{ textDecoration: "none" }}
                     >
                       <img
-                        src={item.imagen}
-                        alt={item.nombre}
-                        style={{
-                          width: "80px",
+                        src={productData.imagen}
+                        alt={productData.nombre}
+                        sx={{
+                          width: "100px",
                           height: "80px",
                           objectFit: "contain",
+                          borderRadius: "5px",
                         }}
                       />
                     </Link>
@@ -297,21 +296,21 @@ const Cart = () => {
                   }}
                 >
                   <Link
-                    to={`/product/${product.id}`}
-                    style={{
-                      width: "350px",
-                    }}
+                    to={`/product/${productData.id}`}
+                    style={{ textDecoration: "none" }}
                   >
                     <img
-                      src={item.imagen}
-                      alt={item.nombre}
-                      style={{
+                      src={productData.imagen}
+                      alt={productData.nombre}
+                      sx={{
                         width: "100px",
                         height: "80px",
                         objectFit: "contain",
+                        borderRadius: "5px",
                       }}
                     />
                   </Link>
+
                   <Box sx={{ width: "480px", alignItems: "center" }}>
                     <Typography sx={{ fontWeight: "bold" }}>
                       {item.nombre}
