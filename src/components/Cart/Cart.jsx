@@ -152,13 +152,13 @@ const Cart = () => {
                     }}
                   >
                     <Link
-                      to={`/product/${item.id}`}
+                      to={`/product/${product.id}`}
                       style={{
                         width: "350px",
                       }}
                     >
                       <img
-                        src={imageUrl}
+                        src={item.imagen}
                         alt={item.nombre}
                         style={{
                           width: "80px",
@@ -297,13 +297,13 @@ const Cart = () => {
                   }}
                 >
                   <Link
-                    to={`/product/${item.id}`}
+                    to={`/product/${product.id}`}
                     style={{
                       width: "350px",
                     }}
                   >
                     <img
-                      src={imageUrl}
+                      src={item.imagen}
                       alt={item.nombre}
                       style={{
                         width: "100px",
