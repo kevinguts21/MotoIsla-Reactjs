@@ -149,7 +149,7 @@ const Cart = () => {
                       marginRight: "10px",
                     }}
                   >
-                    <Link to={`/productos/${item.id}`}>
+                    <Link to={`/product/${item.id}`}>
                       <img
                         src={`${AxiosInstance.defaults.baseURL}${item.imagen}`}
                         alt={item.nombre}
@@ -290,7 +290,7 @@ const Cart = () => {
                   }}
                 >
                   <Link
-                    to={`/productos/${item.id}`}
+                    to={`/product/${item.id}`}
                     style={{
                       width: "350px",
                     }}
