@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, Link, Grid } from "@mui/material";
-import { Facebook, Instagram} from "@mui/icons-material";
+import { Facebook, Instagram } from "@mui/icons-material";
 
 const Footer = () => {
   return (
@@ -37,7 +37,7 @@ const Footer = () => {
           Llama al: <br />
         </Typography>
         <Link
-          href="tel:+5355541164"
+          href="tel:+5359874553"
           sx={{
             color: "white",
             fontWeight: "bold",
@@ -47,7 +47,7 @@ const Footer = () => {
             },
           }}
         >
-          +5353036894
+          +5359874553
         </Link>
       </Typography>
 
@@ -72,10 +72,9 @@ const Footer = () => {
             href="https://www.instagram.com/moto.islasurl/"
             sx={{ color: "white", "&:hover": { color: "#e94f5b" } }}
           >
-            <Instagram/>
+            <Instagram />
           </Link>
         </Grid>
-        
       </Grid>
 
       {/* Derechos reservados */}
