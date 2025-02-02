@@ -13,6 +13,7 @@ import noResultsImage from "../assets/not.png";
 import AxiosInstance from "./Axios";
 import { Navigate } from "react-router-dom";
 
+
 const Home = () => {
   const [columns, setColumns] = useState(4);
   const [currency, setCurrency] = useState(
@@ -24,6 +25,8 @@ const Home = () => {
   const [sortOption, setSortOption] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const isMobile = useMediaQuery("(max-width: 600px)");
   const productsPerPage = isMobile ? 10 : 9;
@@ -41,7 +44,7 @@ const Home = () => {
       try {
         const response = await AxiosInstance.get("/productos/");
         setProducts(response.data);
-        setDisplayedProducts(response.data);
+        setFilteredProducts(response.data);
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -57,17 +60,11 @@ const Home = () => {
     const subcategoria = queryParams.get("subcategoria");
     const categoria = queryParams.get("categoria");
 
-    console.log(
-      "🔎 URL Params - subcategoria:",
-      subcategoria,
-      "categoria:",
-      categoria
-    );
-
     setIsLoading(true);
 
     setTimeout(() => {
-      let filtered;
+      let filtered = products;
+
       if (subcategoria) {
         filtered = products.filter(
           (product) => product.subcategoria?.id.toString() === subcategoria
@@ -76,19 +73,16 @@ const Home = () => {
         filtered = products.filter(
           (product) => product.categoria?.id.toString() === categoria
         );
-      } else {
-        filtered = products;
       }
 
-      console.log("✅ Productos filtrados obtenidos:", filtered);
-      setDisplayedProducts(filtered);
+      setFilteredProducts(filtered);
       setIsLoading(false);
-    }, 500); // ✅ Simulación de carga ligera para evitar parpadeo
+    }, 500);
   }, [location.search, products]);
 
   useEffect(() => {
     if (location.state?.productosFiltrados) {
-      setDisplayedProducts(location.state.productosFiltrados);
+      setFilteredProducts(location.state.productosFiltrados);
       setCurrentPage(1);
     }
   }, [location.state]);
@@ -105,33 +99,44 @@ const Home = () => {
     };
   }, []);
 
-  const sortProducts = () => {
+
+  const handleFilterUpdate = (filters) => {
+    const filtered = applyFilters(filters);
+    setFilteredProducts(filtered);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = (searchQuery) => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    const results = products.filter((product) =>
+      product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    setSearchResults(results);
+  };
+
+
+  // Actualizar displayedProducts combinando búsqueda, filtros y ordenación
+  useEffect(() => {
+    let productsToShow = searchResults.length > 0 ? searchResults : filteredProducts;
+  
     if (sortOption === "low-to-high") {
-      return [...displayedProducts].sort((a, b) => a.precio - b.precio);
-    }
-    if (sortOption === "high-to-low") {
-      return [...displayedProducts].sort((a, b) => b.precio - a.precio);
-    }
-    if (sortOption === "newest") {
-      return [...displayedProducts].sort(
+      productsToShow = [...productsToShow].sort((a, b) => a.precio - b.precio);
+    } else if (sortOption === "high-to-low") {
+      productsToShow = [...productsToShow].sort((a, b) => b.precio - a.precio);
+    } else if (sortOption === "newest") {
+      productsToShow = [...productsToShow].sort(
         (a, b) => new Date(b.tiempo_creado) - new Date(a.tiempo_creado)
       );
     }
-    return displayedProducts;
-  };
-
-  const sortedProducts = sortProducts();
-
-  const handleCurrencyChange = (newCurrency) => {
-    setShowBlurLoading(true);
-    setLoadingCurrency(true);
-    setTimeout(() => {
-      setCurrency(newCurrency);
-      localStorage.setItem("currency", newCurrency);
-      setLoadingCurrency(false);
-      setShowBlurLoading(false);
-    }, 1500);
-  };
+  
+    setDisplayedProducts(productsToShow);
+  }, [filteredProducts, searchResults, sortOption]);
+  
 
   const convertPrice = (price) => {
     const exchangeRate = currency === "CUP" ? 320 : 1;
@@ -141,33 +146,18 @@ const Home = () => {
     }).format(price * exchangeRate);
   };
 
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
-  const paginatedProducts = sortedProducts.slice(
+  const resetFilters = () => {
+    setFilteredProducts(products);
+    setSearchResults([]);
+    setSortOption("");
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
+  const paginatedProducts = displayedProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
-
-  const handleFirstPage = () => setCurrentPage(1);
-  const handleLastPage = () => setCurrentPage(totalPages);
-  const handleNextPage = () =>
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
-  const handlePreviousPage = () =>
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-
-  const debouncedSort = debounce((option) => setSortOption(option), 300);
-
-  const resetFilters = () => {
-    setDisplayedProducts(products);
-    setCurrentPage(1);
-    Navigate("/");
-  };
-
-  const handleFilterUpdate = (filters) => {
-    const filteredProducts = applyFilters(filters);
-    setDisplayedProducts(filteredProducts);
-    setCurrentPage(1);
-  };
 
   return (
     <Box sx={{ padding: 2 }}>
@@ -176,24 +166,39 @@ const Home = () => {
       <Box sx={{ marginBottom: 2.5, marginRight: 2.6 }}>
         <SortAndFilterControls
           currency={currency}
-          handleCurrencyChange={handleCurrencyChange}
+          handleCurrencyChange={setCurrency}
           sortOption={sortOption}
-          debouncedSort={debouncedSort}
+          debouncedSort={debounce(setSortOption, 300)}
           columns={columns}
           setColumns={setColumns}
           paginatedProducts={paginatedProducts}
           displayedProducts={displayedProducts}
           onApplyFilters={handleFilterUpdate}
+          onSearch={handleSearch}
         />
 
-        {displayedProducts.length !== products.length && (
-          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 1 }}>
+        {/* ✅ Botón centrado y con separación */}
+        {(filteredProducts.length !== products.length ||
+          searchResults.length > 0 ||
+          sortOption) && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: 2,
+              marginLeft: 5,
+            }}
+          >
             <Button
               variant="outlined"
               color="error"
               onClick={resetFilters}
               startIcon={<CleaningServicesOutlinedIcon />}
-              sx={{ textTransform: "none", fontSize: "0.9rem" }}
+              sx={{
+                textTransform: "none",
+                fontSize: "0.9rem",
+                padding: "8px 16px",
+              }}
             >
               Limpiar filtros
             </Button>
@@ -210,26 +215,21 @@ const Home = () => {
             spacing={3}
             sx={{ maxWidth: "1200px", marginX: "auto" }}
           >
-            {displayedProducts
-              .slice(
-                (currentPage - 1) * productsPerPage,
-                currentPage * productsPerPage
-              )
-              .map((product) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={columns === 3 ? 4 : 3}
-                  key={product.id}
-                >
-                  <ProductCard
-                    product={product}
-                    currency={currency}
-                    convertPrice={convertPrice}
-                  />
-                </Grid>
-              ))}
+            {paginatedProducts.map((product) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={columns === 3 ? 4 : 3}
+                key={product.id}
+              >
+                <ProductCard
+                  product={product}
+                  currency={currency}
+                  convertPrice={convertPrice}
+                />
+              </Grid>
+            ))}
           </Grid>
         ) : (
           <Box
@@ -264,10 +264,14 @@ const Home = () => {
       <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}
-        handleFirstPage={handleFirstPage}
-        handleLastPage={handleLastPage}
-        handleNextPage={handleNextPage}
-        handlePreviousPage={handlePreviousPage}
+        handleFirstPage={() => setCurrentPage(1)}
+        handleLastPage={() => setCurrentPage(totalPages)}
+        handleNextPage={() =>
+          setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+        }
+        handlePreviousPage={() =>
+          setCurrentPage((prev) => Math.max(prev - 1, 1))
+        }
       />
 
       {showScrollToTop && <ScrollToTopButton onClick={scrollToTop} />}

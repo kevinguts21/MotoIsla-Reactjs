@@ -3,43 +3,25 @@ import { Box, InputBase, IconButton } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-const HandleSearch = ({ onSearch, onClearSearch, data }) => {
+const HandleSearch = ({ onSearch, onClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const normalizeString = (str) => {
-    return str
-      .normalize("NFD") // Descompone caracteres con tildes
-      .replace(/[\u0300-\u036f]/g, "") // Elimina marcas diacríticas
-      .toLowerCase(); // Convierte a minúsculas
-  };
-
-  const filterData = (query) => {
-    if (!data) return []; // Si no hay datos, devuelve un arreglo vacío
-    const normalizedQuery = normalizeString(query);
-    return data.filter((item) =>
-      normalizeString(item).includes(normalizedQuery)
-    );
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      onSearch(searchQuery); // ✅ Enviar el texto de búsqueda a `Navbar.js`
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      onSearch(searchQuery);
+    if (e.key === "Enter" && searchQuery.trim()) {
+      handleSearch();
     }
   };
 
   const handleClear = () => {
     setSearchQuery("");
-    onClearSearch();
+    onClearSearch(); // ✅ Limpiar la búsqueda en `Navbar.js`
   };
-
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      onSearch(searchQuery);
-    }
-  };
-
-  // Datos filtrados según la consulta
-  const filteredData = filterData(searchQuery);
 
   return (
     <Box
@@ -52,7 +34,7 @@ const HandleSearch = ({ onSearch, onClearSearch, data }) => {
         width: "100%",
         maxWidth: "400px",
         transition: "background-color 0.3s",
-        border: "1px solid black", 
+        border: "1px solid black",
         "&:hover": {
           backgroundColor: "#f9f9f9",
         },
