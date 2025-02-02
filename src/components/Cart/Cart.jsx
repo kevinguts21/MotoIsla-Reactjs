@@ -190,6 +190,8 @@ const Cart = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    flexWrap: "wrap", // Permite que los elementos se ajusten en pantallas pequeñas
+                    gap: 1,
                   }}
                 >
                   <Box
@@ -205,14 +207,8 @@ const Cart = () => {
                       }
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "red" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <RemoveIcon />
@@ -222,32 +218,21 @@ const Cart = () => {
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "green",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "green" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <AddIcon />
                     </IconButton>
                   </Box>
+
+                  
                   <IconButton
                     onClick={() => handleRemoveItem(item.id)}
                     sx={{
-                      marginLeft: "190px",
                       color: "#D32F2F",
-
-                      "&:hover": {
-                        color: "red",
-                      },
-                      "&:focus": {
-                        outline: "none",
-                        boxShadow: "none",
-                      },
+                      "&:hover": { color: "red" },
+                      "&:focus": { outline: "none", boxShadow: "none" },
                     }}
                   >
                     <DeleteIcon />
