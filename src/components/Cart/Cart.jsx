@@ -147,21 +147,7 @@ const Cart = () => {
                       alignItems: "center",
                       marginRight: "10px",
                     }}
-                  >
-                    <Link to={`/product/${item.id}`}>
-                      <img
-                        src={`http://localhost:8000/media/Productos/${item.imagen
-                          .split("/")
-                          .pop()}`}
-                        alt={item.nombre}
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          objectFit: "contain",
-                        }}
-                      />
-                    </Link>
-                  </Box>
+                  ></Box>
                   <Box
                     sx={{
                       display: "flex",
@@ -172,18 +158,19 @@ const Cart = () => {
                       width: "100%",
                     }}
                   >
+                    <Link to={`/product/${item.id}`}>
+                      <Typography
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: "1.3rem",
+                          textAlign: "left",
+                        }}
+                      >
+                        {item.nombre}
+                      </Typography>
+                    </Link>
                     <Typography
                       sx={{
-                        fontWeight: "bold",
-                        fontSize: "1.3rem",
-                        textAlign: "left",
-                      }}
-                    >
-                      {item.nombre}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        
                         color: "gray",
                       }}
                     >
@@ -191,7 +178,6 @@ const Cart = () => {
                     </Typography>
                     <Typography
                       sx={{
-                        
                         color: "gray",
                       }}
                     >
@@ -292,41 +278,21 @@ const Cart = () => {
                     gap: 2,
                   }}
                 >
-                  <Link
-                    to={`/product/${item.id}`}
-                    style={{
-                      width: "350px",
-                    }}
-                  >
-                    <img
-                      src={`http://localhost:8000/media/Productos/${item.imagen
-                        .split("/")
-                        .pop()}`}
-                      alt={item.nombre}
-                      style={{
-                        width: "100px",
-                        height: "80px",
-                        objectFit: "contain",
-                      }}
-                    />
-                  </Link>
                   <Box sx={{ width: "480px", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: "bold" }}>
-                      {item.nombre}
-                    </Typography>
+                    <Link to={`/product/${item.id}`}>
+                      <Typography sx={{ fontWeight: "bold" }}>
+                        {item.nombre}
+                      </Typography>
+                    </Link>
                   </Box>
                   <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography >
-                      Precio Unitario
-                    </Typography>
+                    <Typography>Precio Unitario</Typography>
                     <Typography sx={{ color: "gray" }}>
                       {item.precio} CUP
                     </Typography>
                   </Box>
                   <Box sx={{ width: "420px", alignItems: "center" }}>
-                    <Typography >
-                      Importe Total
-                    </Typography>
+                    <Typography>Importe Total</Typography>
                     <Typography sx={{ color: "gray" }}>
                       {item.precio * item.quantity} CUP
                     </Typography>
