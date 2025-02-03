@@ -16,8 +16,8 @@ import PaginationControls from "./Home/PaginationControls";
 import LoadingOverlay from "./Home/LoadingOverlay";
 import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
-import noResultsImage from "../assets/Not.png";
-import AxiosInstance from "./Axios";
+import noResultsImage from "../assets/not.png";
+
 
 const Home = ({ filteredProducts, loading }) => {
   const [columns, setColumns] = useState(4);
