@@ -274,7 +274,7 @@ p {
 }
 @media screen and (max-width: 450px) {
   .service {
-    width: 90%;
+    width: 95%;
     margin: 25px auto;
   }
   .abaut {

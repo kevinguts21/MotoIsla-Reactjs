@@ -11,8 +11,6 @@ import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
 import noResultsImage from "../assets/not.png";
 import AxiosInstance from "./Axios";
-import { Navigate } from "react-router-dom";
-
 
 const Home = () => {
   const [columns, setColumns] = useState(4);
@@ -26,7 +24,6 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const isMobile = useMediaQuery("(max-width: 600px)");
   const productsPerPage = isMobile ? 10 : 9;
@@ -45,6 +42,8 @@ const Home = () => {
         const response = await AxiosInstance.get("/productos/");
         setProducts(response.data);
         setFilteredProducts(response.data);
+        setDisplayedProducts(response.data); // Initialize displayedProducts
+        console.log("Fetched products:", response.data); // Debug log
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -76,6 +75,8 @@ const Home = () => {
       }
 
       setFilteredProducts(filtered);
+      setDisplayedProducts(filtered); // Update displayedProducts
+      console.log("Filtered products by category:", filtered); // Debug log
       setIsLoading(false);
     }, 500);
   }, [location.search, products]);
@@ -83,7 +84,9 @@ const Home = () => {
   useEffect(() => {
     if (location.state?.productosFiltrados) {
       setFilteredProducts(location.state.productosFiltrados);
+      setDisplayedProducts(location.state.productosFiltrados); // Update displayedProducts
       setCurrentPage(1);
+      console.log("Filtered products from state:", location.state.productosFiltrados); // Debug log
     }
   }, [location.state]);
 
@@ -99,44 +102,50 @@ const Home = () => {
     };
   }, []);
 
-
   const handleFilterUpdate = (filters) => {
     const filtered = applyFilters(filters);
     setFilteredProducts(filtered);
+    setDisplayedProducts(filtered); // Update displayedProducts
     setCurrentPage(1);
+    console.log("Filtered products by filters:", filtered); // Debug log
   };
 
   const handleSearch = (searchQuery) => {
+    console.log("Search query:", searchQuery); // Debug log
+
     if (!searchQuery.trim()) {
-      setSearchResults([]);
+      // If search query is empty, show filtered products
+      setDisplayedProducts(filteredProducts);
+      console.log("Search query is empty. Showing filtered products:", filteredProducts); // Debug log
       return;
     }
 
+    // Filter products based on search query
     const results = products.filter((product) =>
       product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    setSearchResults(results);
+    console.log("Search results:", results); // Debug log
+    setDisplayedProducts(results); // Update displayedProducts with search results
   };
 
-
-  // Actualizar displayedProducts combinando búsqueda, filtros y ordenación
+  // Apply sorting to displayedProducts
   useEffect(() => {
-    let productsToShow = searchResults.length > 0 ? searchResults : filteredProducts;
-  
+    let productsToShow = [...displayedProducts];
+
     if (sortOption === "low-to-high") {
-      productsToShow = [...productsToShow].sort((a, b) => a.precio - b.precio);
+      productsToShow.sort((a, b) => a.precio - b.precio);
     } else if (sortOption === "high-to-low") {
-      productsToShow = [...productsToShow].sort((a, b) => b.precio - a.precio);
+      productsToShow.sort((a, b) => b.precio - a.precio);
     } else if (sortOption === "newest") {
-      productsToShow = [...productsToShow].sort(
+      productsToShow.sort(
         (a, b) => new Date(b.tiempo_creado) - new Date(a.tiempo_creado)
       );
     }
-  
+
+    console.log("Sorted products:", productsToShow); // Debug log
     setDisplayedProducts(productsToShow);
-  }, [filteredProducts, searchResults, sortOption]);
-  
+  }, [sortOption]);
 
   const convertPrice = (price) => {
     const exchangeRate = currency === "CUP" ? 320 : 1;
@@ -148,9 +157,10 @@ const Home = () => {
 
   const resetFilters = () => {
     setFilteredProducts(products);
-    setSearchResults([]);
+    setDisplayedProducts(products); // Reset displayedProducts
     setSortOption("");
     setCurrentPage(1);
+    console.log("Filters reset. Showing all products:", products); // Debug log
   };
 
   const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
@@ -177,9 +187,9 @@ const Home = () => {
           onSearch={handleSearch}
         />
 
-        {/* ✅ Botón centrado y con separación */}
+        {/* ✅ Updated condition for "Clean Filters" button */}
         {(filteredProducts.length !== products.length ||
-          searchResults.length > 0 ||
+          displayedProducts.length !== products.length ||
           sortOption) && (
           <Box
             sx={{
