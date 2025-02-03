@@ -33,7 +33,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
         padding: "10px 20px",
         position: "relative",
         width: { xs: "90%", sm: "400px" },
-        border: "0.5px solid black", // Borde negro
+        border: "1px solid black", // Borde negro
       }}
     >
       <InputBase
@@ -55,7 +55,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
         sx={{
           color: "black",
           padding: 0,
-          "&:hover": {
+         "&:hover": {
             color: "red",
           },
         }}
@@ -70,7 +70,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
           sx={{
             color: "black",
             position: "absolute",
-            right: 35,
+            marginLeft: 33, // Aumenta la separación
             "&:hover": {
               color: "red",
             },
