@@ -101,7 +101,7 @@ const Navbar = ({ onSearch, onClearSearch }) => {
               display: "flex",
               alignItems: "center",
               gap: "20px",
-              marginLeft: "auto",
+              marginLeft: "870px",
             }}
           >
             <Link to="/cart">
