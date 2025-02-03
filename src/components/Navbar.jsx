@@ -6,25 +6,17 @@ import LOGO from "../assets/LOGO-1.png";
 import { Link } from "react-router-dom";
 import HandleSearch from "./Search/HandleSearch";
 import DrawerNavbarMobile from "./DrawerNavbarMobile";
-import { useNavigate } from "react-router-dom";
+
 
 const Navbar = ({ onSearch, onClearSearch }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const navigate = useNavigate();
+  
 
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
   };
 
-  const handleSearch = (searchQuery) => {
-    if (searchQuery.trim()) {
-      navigate(`/?search=${encodeURIComponent(searchQuery)}`);
-      onSearch(searchQuery);
-    } else {
-      navigate("/");
-      onClearSearch();
-    }
-  };
+
 
   return (
     <>
@@ -66,7 +58,7 @@ const Navbar = ({ onSearch, onClearSearch }) => {
           </IconButton>
         </Toolbar>
         <Box sx={{ width: "100%", marginBottom: "10px", marginRight: "18px" }}>
-          <HandleSearch onSearch={handleSearch} onClearSearch={onClearSearch} />
+        <HandleSearch onSearch={onSearch} onClearSearch={onClearSearch} />
         </Box>
       </AppBar>
 
@@ -115,7 +107,7 @@ const Navbar = ({ onSearch, onClearSearch }) => {
               </IconButton>
             </Link>
             <Box sx={{ width: "700px", marginRight: "50px" }}>
-              <HandleSearch onSearch={handleSearch} onClearSearch={onClearSearch} />
+              <HandleSearch onSearch={onSearch} onClearSearch={onClearSearch} />
             </Box>
           </Box>
         </Toolbar>

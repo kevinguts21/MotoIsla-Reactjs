@@ -6,21 +6,21 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 const HandleSearch = ({ onSearch, onClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      onSearch(searchQuery); // ✅ Enviar el texto de búsqueda a `Navbar.js`
-    }
-  };
-
   const handleKeyPress = (e) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
-      handleSearch();
+    if (e.key === "Enter") {
+      onSearch(searchQuery);
     }
   };
 
   const handleClear = () => {
     setSearchQuery("");
-    onClearSearch(); // ✅ Limpiar la búsqueda en `Navbar.js`
+    onClearSearch();
+  };
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      onSearch(searchQuery);
+    }
   };
 
   return (
@@ -28,16 +28,12 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        backgroundColor: "white",
-        borderRadius: "25px",
-        padding: "5px 10px",
-        width: "100%",
-        maxWidth: "400px",
-        transition: "background-color 0.3s",
-        border: "1px solid black",
-        "&:hover": {
-          backgroundColor: "#f9f9f9",
-        },
+        backgroundColor: "#fff", // Fondo siempre blanco
+        borderRadius: "111px",
+        padding: "10px 20px",
+        position: "relative",
+        width: { xs: "90%", sm: "400px" },
+        border: "0.5px solid black", // Borde negro
       }}
     >
       <InputBase
@@ -47,33 +43,36 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
         onKeyDown={handleKeyPress}
         sx={{
           flex: 1,
-          color: "#333",
-          fontSize: "16px",
-          paddingLeft: "8px",
+          color: "rgba(0, 0, 0, 0.9)",
+          fontSize: "18px",
+          paddingLeft: "10px",
         }}
       />
 
       <IconButton
         onClick={handleSearch}
+        disableRipple
         sx={{
-          color: "#666",
-          transition: "color 0.3s",
+          color: "black",
+          padding: 0,
           "&:hover": {
-            color: "#000",
+            color: "red",
           },
         }}
       >
-        <SearchIcon />
+        <SearchIcon sx={{ color: "inherit", fontSize: "1.5rem" }} />
       </IconButton>
 
       {searchQuery.trim() && (
         <IconButton
+          disableRipple
           onClick={handleClear}
           sx={{
-            color: "#666",
-            transition: "color 0.3s",
+            color: "black",
+            position: "absolute",
+            right: 35,
             "&:hover": {
-              color: "#000",
+              color: "red",
             },
           }}
         >

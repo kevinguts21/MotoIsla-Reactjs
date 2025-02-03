@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Box, CircularProgress, Grid, Typography, Button } from "@mui/material";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  Typography,
+  Button,
+  Divider,
+} from "@mui/material";
 import CleaningServicesOutlinedIcon from "@mui/icons-material/CleaningServicesOutlined";
 import { useMediaQuery } from "@mui/material";
 import { debounce } from "lodash";
@@ -9,10 +16,10 @@ import PaginationControls from "./Home/PaginationControls";
 import LoadingOverlay from "./Home/LoadingOverlay";
 import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
-import noResultsImage from "../assets/not.png";
+import noResultsImage from "../assets/Not.png";
 import AxiosInstance from "./Axios";
 
-const Home = () => {
+const Home = ({ filteredProducts, loading }) => {
   const [columns, setColumns] = useState(4);
   const [currency, setCurrency] = useState(
     () => localStorage.getItem("currency") || "USD"
@@ -22,71 +29,17 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sortOption, setSortOption] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [displayedProducts, setDisplayedProducts] = useState(filteredProducts);
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const productsPerPage = isMobile ? 10 : 9;
+  const productsPerPage = isMobile ? 10 : 9; // Ajuste para móvil o escritorio
   const location = useLocation();
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-      try {
-        const response = await AxiosInstance.get("/productos/");
-        setProducts(response.data);
-        setFilteredProducts(response.data);
-        setDisplayedProducts(response.data); // Initialize displayedProducts
-        console.log("Fetched products:", response.data); // Debug log
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const queryParams = new URLSearchParams(location.search);
-    const subcategoria = queryParams.get("subcategoria");
-    const categoria = queryParams.get("categoria");
-
-    setIsLoading(true);
-
-    setTimeout(() => {
-      let filtered = products;
-
-      if (subcategoria) {
-        filtered = products.filter(
-          (product) => product.subcategoria?.id.toString() === subcategoria
-        );
-      } else if (categoria) {
-        filtered = products.filter(
-          (product) => product.categoria?.id.toString() === categoria
-        );
-      }
-
-      setFilteredProducts(filtered);
-      setDisplayedProducts(filtered); // Update displayedProducts
-      console.log("Filtered products by category:", filtered); // Debug log
-      setIsLoading(false);
-    }, 500);
-  }, [location.search, products]);
-
-  useEffect(() => {
     if (location.state?.productosFiltrados) {
-      setFilteredProducts(location.state.productosFiltrados);
-      setDisplayedProducts(location.state.productosFiltrados); // Update displayedProducts
-      setCurrentPage(1);
-      console.log("Filtered products from state:", location.state.productosFiltrados); // Debug log
+      setDisplayedProducts(location.state.productosFiltrados);
+      setCurrentPage(1); // Reinicia la paginación si se reciben nuevos productos
     }
   }, [location.state]);
 
@@ -102,50 +55,63 @@ const Home = () => {
     };
   }, []);
 
-  const handleFilterUpdate = (filters) => {
-    const filtered = applyFilters(filters);
-    setFilteredProducts(filtered);
-    setDisplayedProducts(filtered); // Update displayedProducts
-    setCurrentPage(1);
-    console.log("Filtered products by filters:", filtered); // Debug log
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleSearch = (searchQuery) => {
-    console.log("Search query:", searchQuery); // Debug log
-
-    if (!searchQuery.trim()) {
-      // If search query is empty, show filtered products
-      setDisplayedProducts(filteredProducts);
-      console.log("Search query is empty. Showing filtered products:", filteredProducts); // Debug log
-      return;
-    }
-
-    // Filter products based on search query
-    const results = products.filter((product) =>
-      product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
-    console.log("Search results:", results); // Debug log
-    setDisplayedProducts(results); // Update displayedProducts with search results
-  };
-
-  // Apply sorting to displayedProducts
   useEffect(() => {
-    let productsToShow = [...displayedProducts];
+    const queryParams = new URLSearchParams(location.search);
+    const subcategoria = queryParams.get("subcategoria");
+    const categoria = queryParams.get("categoria");
 
+    setIsLoading(true);
+
+    setTimeout(() => {
+      let filtered;
+      if (subcategoria) {
+        filtered = filteredProducts.filter(
+          (product) => product.subcategoria?.id.toString() === subcategoria
+        );
+      } else if (categoria) {
+        filtered = filteredProducts.filter(
+          (product) => product.categoria?.id.toString() === categoria
+        );
+      } else {
+        filtered = filteredProducts;
+      }
+
+      setDisplayedProducts(filtered);
+      setIsLoading(false);
+    }, 1000);
+  }, [location.search, filteredProducts]);
+
+  const sortProducts = () => {
     if (sortOption === "low-to-high") {
-      productsToShow.sort((a, b) => a.precio - b.precio);
-    } else if (sortOption === "high-to-low") {
-      productsToShow.sort((a, b) => b.precio - a.precio);
-    } else if (sortOption === "newest") {
-      productsToShow.sort(
+      return [...displayedProducts].sort((a, b) => a.precio - b.precio);
+    }
+    if (sortOption === "high-to-low") {
+      return [...displayedProducts].sort((a, b) => b.precio - a.precio);
+    }
+    if (sortOption === "newest") {
+      return [...displayedProducts].sort(
         (a, b) => new Date(b.tiempo_creado) - new Date(a.tiempo_creado)
       );
     }
+    return displayedProducts;
+  };
 
-    console.log("Sorted products:", productsToShow); // Debug log
-    setDisplayedProducts(productsToShow);
-  }, [sortOption]);
+  const sortedProducts = sortProducts();
+
+  const handleCurrencyChange = (newCurrency) => {
+    setShowBlurLoading(true);
+    setLoadingCurrency(true);
+    setTimeout(() => {
+      setCurrency(newCurrency);
+      localStorage.setItem("currency", newCurrency);
+      setLoadingCurrency(false);
+      setShowBlurLoading(false);
+    }, 1500);
+  };
 
   const convertPrice = (price) => {
     const exchangeRate = currency === "CUP" ? 320 : 1;
@@ -155,48 +121,67 @@ const Home = () => {
     }).format(price * exchangeRate);
   };
 
-  const resetFilters = () => {
-    setFilteredProducts(products);
-    setDisplayedProducts(products); // Reset displayedProducts
-    setSortOption("");
-    setCurrentPage(1);
-    console.log("Filters reset. Showing all products:", products); // Debug log
-  };
-
-  const totalPages = Math.ceil(displayedProducts.length / productsPerPage);
-  const paginatedProducts = displayedProducts.slice(
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+  const paginatedProducts = sortedProducts.slice(
     (currentPage - 1) * productsPerPage,
     currentPage * productsPerPage
   );
 
+  const handleFirstPage = () => setCurrentPage(1);
+  const handleLastPage = () => setCurrentPage(totalPages);
+  const handleNextPage = () =>
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+
+  const handlePreviousPage = () =>
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+
+  const debouncedSort = debounce((option) => setSortOption(option), 300);
+
+  const resetFilters = () => {
+    setDisplayedProducts(filteredProducts);
+    setCurrentPage(1); // Reinicia la paginación
+  };
+
   return (
     <Box sx={{ padding: 2 }}>
-      {isLoading && <LoadingOverlay />}
+      {isLoading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0,0,0,.5)",
+            zIndex: 9999,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backdropFilter: "blur(5px)",
+          }}
+        >
+          <CircularProgress size={80} sx={{ color: "#fff" }} />
+        </Box>
+      )}
 
-      <Box sx={{ marginBottom: 2.5, marginRight: 2.6 }}>
+      <Box sx={{ marginBottom: 2.5,marginRight:"25px" }}>
         <SortAndFilterControls
           currency={currency}
-          handleCurrencyChange={setCurrency}
+          handleCurrencyChange={handleCurrencyChange}
           sortOption={sortOption}
-          debouncedSort={debounce(setSortOption, 300)}
+          debouncedSort={debouncedSort}
           columns={columns}
           setColumns={setColumns}
           paginatedProducts={paginatedProducts}
           displayedProducts={displayedProducts}
-          onApplyFilters={handleFilterUpdate}
-          onSearch={handleSearch}
         />
-
-        {/* ✅ Updated condition for "Clean Filters" button */}
-        {(filteredProducts.length !== products.length ||
-          displayedProducts.length !== products.length ||
-          sortOption) && (
+        
+        {displayedProducts.length !== filteredProducts.length && (
           <Box
             sx={{
               display: "flex",
               justifyContent: "center",
-              marginTop: 2,
-              marginLeft: 5,
+              marginTop: 1,
             }}
           >
             <Button
@@ -207,7 +192,8 @@ const Home = () => {
               sx={{
                 textTransform: "none",
                 fontSize: "0.9rem",
-                padding: "8px 16px",
+                borderRadius: "20px",
+                paddingX: 2,
               }}
             >
               Limpiar filtros
@@ -217,9 +203,9 @@ const Home = () => {
       </Box>
 
       <Box sx={{ display: "flex", justifyContent: "center", marginBottom: 4 }}>
-        {isLoading ? (
+        {loading ? (
           <CircularProgress />
-        ) : displayedProducts.length > 0 ? (
+        ) : paginatedProducts.length > 0 ? (
           <Grid
             container
             spacing={3}
@@ -274,14 +260,10 @@ const Home = () => {
       <PaginationControls
         currentPage={currentPage}
         totalPages={totalPages}
-        handleFirstPage={() => setCurrentPage(1)}
-        handleLastPage={() => setCurrentPage(totalPages)}
-        handleNextPage={() =>
-          setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-        }
-        handlePreviousPage={() =>
-          setCurrentPage((prev) => Math.max(prev - 1, 1))
-        }
+        handleFirstPage={handleFirstPage}
+        handleLastPage={handleLastPage}
+        handleNextPage={handleNextPage}
+        handlePreviousPage={handlePreviousPage}
       />
 
       {showScrollToTop && <ScrollToTopButton onClick={scrollToTop} />}
