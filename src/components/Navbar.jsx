@@ -7,16 +7,12 @@ import { Link } from "react-router-dom";
 import HandleSearch from "./Search/HandleSearch";
 import DrawerNavbarMobile from "./DrawerNavbarMobile";
 
-
 const Navbar = ({ onSearch, onClearSearch }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  
 
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
   };
-
-
 
   return (
     <>
@@ -25,7 +21,8 @@ const Navbar = ({ onSearch, onClearSearch }) => {
         position="sticky"
         sx={{
           display: { xs: "flex", md: "none" },
-          background: "linear-gradient(155deg, rgba(255,255,255,1) 34%, rgba(255,218,93,1) 60%, rgba(255,0,8,1) 92%)",
+          background:
+            "linear-gradient(155deg, rgba(255,255,255,1) 34%, rgba(255,218,93,1) 60%, rgba(255,0,8,1) 92%)",
           padding: "5px 20px",
           flexDirection: "column",
           alignItems: "center",
@@ -53,12 +50,18 @@ const Navbar = ({ onSearch, onClearSearch }) => {
             color="inherit"
             aria-label="menu"
             onClick={() => toggleDrawer(true)}
+            sx={{
+              "&:focus": {
+                outline: "none",
+                boxShadow: "none",
+              },
+            }}
           >
             <MenuIcon sx={{ fontSize: "1.8rem" }} />
           </IconButton>
         </Toolbar>
         <Box sx={{ width: "100%", marginBottom: "10px", marginRight: "18px" }}>
-        <HandleSearch onSearch={onSearch} onClearSearch={onClearSearch} />
+          <HandleSearch onSearch={onSearch} onClearSearch={onClearSearch} />
         </Box>
       </AppBar>
 
@@ -67,7 +70,8 @@ const Navbar = ({ onSearch, onClearSearch }) => {
         position="sticky"
         sx={{
           display: { xs: "none", md: "flex" },
-          background: "linear-gradient(155deg, rgba(255,255,255,1) 34%, rgba(255,218,93,1) 60%, rgba(255,0,8,1) 92%)",
+          background:
+            "linear-gradient(155deg, rgba(255,255,255,1) 34%, rgba(255,218,93,1) 60%, rgba(255,0,8,1) 92%)",
           padding: "5px 20px",
         }}
       >
@@ -75,10 +79,11 @@ const Navbar = ({ onSearch, onClearSearch }) => {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "space-between", // Asegura que los elementos se distribuyan entre sí
             width: "100%",
           }}
         >
+          {/* Logo */}
           <Box>
             <Link to="/">
               <img
@@ -88,30 +93,43 @@ const Navbar = ({ onSearch, onClearSearch }) => {
               />
             </Link>
           </Box>
+
+          {/* Carrito */}
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
-              gap: "20px",
-              marginLeft: "870px",
+              justifyContent: "flex-end", // Asegura que ambos elementos se alineen a la derecha
+              marginRight: "20px",
+              gap: "10px", // Espacio entre el carrito y la barra de búsqueda
             }}
           >
+            {/* Carrito */}
             <Link to="/cart">
               <IconButton
                 edge="end"
                 color="#FFFFFF"
                 aria-label="shopping cart"
                 disableRipple
+                sx={{
+                  "&:focus": {
+                    outline: "none",
+                    boxShadow: "none",
+                  },
+                }}
               >
                 <ShoppingCartIcon sx={{ fontSize: "1.8rem" }} />
               </IconButton>
             </Link>
-            <Box sx={{ width: "700px", marginRight: "50px" }}>
+
+            {/* Buscador */}
+            <Box sx={{ width: "100%", maxWidth: "700px" }}>
               <HandleSearch onSearch={onSearch} onClearSearch={onClearSearch} />
             </Box>
           </Box>
         </Toolbar>
       </AppBar>
+
       <DrawerNavbarMobile drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
     </>
   );

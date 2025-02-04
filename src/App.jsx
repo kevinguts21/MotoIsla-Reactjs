@@ -11,8 +11,8 @@ import Cart from "./components/Cart/Cart";
 import { CartProvider } from "./components/Cart/CartContext";
 import { Toaster } from "react-hot-toast";
 import { useMediaQuery } from "@mui/material";
-import ImagenSlide from "./components/ImagenSlide"; 
-import AxiosInstance from "./components/Axios"; 
+import ImagenSlide from "./components/ImagenSlide";
+import AxiosInstance from "./components/Axios";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -27,7 +27,7 @@ function App() {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const response = await AxiosInstance.get("/productos/"); 
+        const response = await AxiosInstance.get("/productos/");
         setProducts(response.data);
         setFilteredProducts(response.data);
       } catch (error) {
@@ -40,16 +40,24 @@ function App() {
     fetchProducts();
   }, []);
 
+  const normalizeText = (text) => {
+    return text
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     setLoading(true);
-    navigate("/"); 
+    navigate("/");
   };
 
   useEffect(() => {
     if (searchQuery.trim() !== "") {
+      const normalizedQuery = normalizeText(searchQuery);
       const filtered = products.filter((product) =>
-        product.nombre.toLowerCase().includes(searchQuery.toLowerCase())
+        normalizeText(product.nombre).includes(normalizedQuery)
       );
       setFilteredProducts(filtered);
     } else {

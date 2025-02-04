@@ -64,6 +64,13 @@ const ProductCard = ({ product, currency, convertPrice }) => {
     height: "150px",
     objectFit: "contain",
     marginBottom: "5px",
+
+    // Ajuste para móviles
+    [theme.breakpoints.down("sm")]: {
+      maxHeight: "120px", // Evita que crezca demasiado en móviles
+      aspectRatio: "4 / 3", // Mantiene la proporción cuadrada
+      minWidth: "80px", // Evita que se haga muy pequeña
+    },
   }));
 
   const CartButton = styled(IconButton)(({ theme }) => ({

@@ -28,12 +28,13 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
       sx={{
         display: "flex",
         alignItems: "center",
-        backgroundColor: "#fff", // Fondo siempre blanco
+        backgroundColor: "#fff",
         borderRadius: "111px",
         padding: "10px 20px",
-        position: "relative",
-        width: { xs: "90%", sm: "400px" },
-        border: "1px solid black", // Borde negro
+        width: { xs: "90%", sm: "400px", lg: "600px" }, // Adaptable a pantalla
+        maxWidth: "100%",
+        border: "1px solid black",
+        gap: "10px", // Espaciado uniforme
       }}
     >
       <InputBase
@@ -42,7 +43,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
         onChange={(e) => setSearchQuery(e.target.value)}
         onKeyDown={handleKeyPress}
         sx={{
-          flex: 1,
+          flex: 1, // Ocupa el espacio restante
           color: "rgba(0, 0, 0, 0.9)",
           fontSize: "18px",
           paddingLeft: "10px",
@@ -55,7 +56,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
         sx={{
           color: "black",
           padding: 0,
-         "&:hover": {
+          "&:hover": {
             color: "red",
           },
         }}
@@ -69,8 +70,7 @@ const HandleSearch = ({ onSearch, onClearSearch }) => {
           onClick={handleClear}
           sx={{
             color: "black",
-            position: "absolute",
-            marginLeft: 33, // Aumenta la separación
+            padding: 0,
             "&:hover": {
               color: "red",
             },
