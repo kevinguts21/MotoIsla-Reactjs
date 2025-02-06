@@ -27,11 +27,16 @@ const GeneratePDFAndPurchase = () => {
 
   const customerValidationSchema = Yup.object().shape({
     customerName: Yup.string().required("El nombre del cliente es obligatorio"),
-    customerID: Yup.string().required("El número de carnet es obligatorio"),
+    customerID: Yup.string()
+      .required("El número de carnet es obligatorio")
+      .matches(/^[0-9]+$/, "El número de carnet debe contener solo dígitos")
+      .length(11, "El número de carnet debe tener 11 dígitos"), // Agregado length
     customerPhone: Yup.string()
       .required("El número telefónico es obligatorio")
-      .matches(/^[0-9]+$/, "El número telefónico debe contener solo dígitos"),
+      .matches(/^[0-9]+$/, "El número telefónico debe contener solo dígitos")
+      .length(6, "El número telefónico debe tener 6 dígitos"), // Agregado length
   });
+  
 
   const totalAmount = cart.reduce(
     (sum, item) => sum + Number(item.precio) * item.quantity,
@@ -83,7 +88,7 @@ const GeneratePDFAndPurchase = () => {
       doc.text("Tienda Virtual Moto Isla Surl", 10, 60);
       doc.setFontSize(14);
       doc.text("Isla de la Juventud", 10, 70);
-      doc.text("+5355541164", 10, 80);
+      doc.text("+5359874553", 10, 80);
 
       doc.setFontSize(16);
       doc.text("Dirección de facturación:", 10, 100);
