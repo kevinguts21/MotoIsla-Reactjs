@@ -34,7 +34,7 @@ const GeneratePDFAndPurchase = () => {
     customerPhone: Yup.string()
       .required("El número telefónico es obligatorio")
       .matches(/^[0-9]+$/, "El número telefónico debe contener solo dígitos")
-      .length(6, "El número telefónico debe tener 6 dígitos"), // Agregado length
+      .length(8, "El número telefónico debe tener 6 dígitos"), // Agregado length
   });
   
 
