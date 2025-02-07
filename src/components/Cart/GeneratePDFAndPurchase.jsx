@@ -150,8 +150,8 @@ const GeneratePDFAndPurchase = () => {
       // Centering text
       const footerText1 = "Tienda Virtual Moto ISLA Surl - Isla de la Juventud";
       const footerText2 = "Para obtener más ayuda contacte con el soporte:";
-      const footerText3 = "Tel: +5359874553";
-      const footerText4 = "Atendemos todos los días excepto los domingos";
+      const footerText3 = "Atendemos todos los días excepto los domingos"; 
+      const footerText4 = "Tel: +5359874553";
 
       const pageWidth = doc.internal.pageSize.getWidth();
       const textWidth1 = doc.getTextWidth(footerText1);
@@ -248,9 +248,9 @@ const GeneratePDFAndPurchase = () => {
         <DialogTitle>Confirmación</DialogTitle>
         <DialogContent>
           <p>
-            Se ha generado un comprobante de compra en formato PDF. Por favor,
-            proporciónelo al gestor de ventas vía WhatsApp para continuar con el
-            proceso.
+            Se ha generado un comprobante de compra en formato PDF. Será
+            redirigido al chat de nuestro gestor de venta, por favor proporcione dicho pdf 
+            manualmente en el chat.
           </p>
         </DialogContent>
         <DialogActions>
@@ -258,7 +258,7 @@ const GeneratePDFAndPurchase = () => {
             Cancelar
           </Button>
           <Button onClick={handleSendWhatsApp} color="primary">
-            Enviar WhatsApp
+            Continuar al chat
           </Button>
         </DialogActions>
       </Dialog>
