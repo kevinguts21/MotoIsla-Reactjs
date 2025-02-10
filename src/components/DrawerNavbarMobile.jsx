@@ -38,7 +38,7 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
         onClick={() => toggleDrawer(false)}
         onKeyDown={() => toggleDrawer(false)}
       >
-        {/* Header del Drawer */}
+        
         <Paper
           sx={{
             backgroundColor: "#ffffffcc",
