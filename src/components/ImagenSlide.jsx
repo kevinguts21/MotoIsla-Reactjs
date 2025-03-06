@@ -7,6 +7,7 @@ import desktop from "../assets/Portada/Dekstop.png"; // 1920x510
 import motorcycle from "../assets/Portada/moto.jpg"; // 1920x1080
 import service from "../assets/Portada/Services.png";
 import portada from "../assets/Portada/PortadaDesk.png";
+import repair from "../assets/Portada/repair.png";
 
 // Custom Left Arrow
 const CustomPrevArrow = ({ onClick }) => (
@@ -59,6 +60,7 @@ const ImagenSlide = () => {
   const mobileImages = [
     { src: service, alt: "Mobile Image 1" },
     { src: motorcycle, alt: "Mobile Image 2" },
+    { src: repair, alt: "Mobile Image 3" },
   ];
 
   // Select images based on the view
