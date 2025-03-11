@@ -74,21 +74,21 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
             <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
               <ShoppingCartIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Carrito" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary="Carrito" sx={{ color: "black", fontSize: "1.0rem", fontWeight: "bold", }} />
           </ListItem>
 
           <ListItem button component={Link} to="/about" sx={{ padding: "16px 0" }}>
             <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
               <InfoIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Sobre Nosotros" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary="Sobre Nosotros" sx={{ color: "black", fontSize: "1.0rem", fontWeight: "bold", }} />
           </ListItem>
 
           <ListItem button component="a" href="https://wa.me/5359874553" target="_blank" sx={{ padding: "16px 0" }}>
             <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
               <WhatsAppIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Contáctenos" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary="Contáctenos" sx={{ color: "black", fontSize: "1.0rem", fontWeight: "bold", }} />
           </ListItem>
         </List>
 
@@ -100,7 +100,7 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
                 <FacebookIcon />
               </IconButton>
             </a>
-            <a href="https://www.instagram.com/moto.islasurl/" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com/moto_isla.surl/" target="_blank" rel="noopener noreferrer">
               <IconButton>
                 <InstagramIcon />
               </IconButton>
