@@ -1,14 +1,24 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Box, Paper, Button, IconButton } from "@mui/material";
+import {
+  Typography,
+  Box,
+  Paper,
+  Button,
+  IconButton,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import toast, { Toaster } from "react-hot-toast";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
-import { CartContext } from "./Cart/CartContext";
+
+const exchangeRate = 340; // 1 USD = 340 CUP
 
 const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
   const [quantity, setQuantity] = useState(1);
+  const [currency, setCurrency] = useState("CUP");
 
   const {
     nombre,
@@ -29,24 +39,33 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
     subcategoria?.categoria?.nombre || "Categoría desconocida";
   const subcategoriaNombre = subcategoria?.nombre || "Subcategoría desconocida";
 
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.value);
+  };
+
+  const convertPrice = (price, currency) => {
+    return currency === "USD" ? (price / exchangeRate).toFixed(2) : price;
+  };
+
   const handleAddToCart = () => {
     const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
     const productInCart = cart.find((item) => item.id === product.id);
 
     if (productInCart) {
-      productInCart.quantity += quantity; // Update quantity if already in cart
+      productInCart.quantity += quantity;
     } else {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: product.precio,
+        precio: convertPrice(product.precio, currency),
+        currency,
         quantity,
         imagen: product.imagen,
       });
     }
 
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    toast.success(`${nombre} añadido al carrito.`);
+    toast.success(`${nombre} añadido al carrito en ${currency}.`);
   };
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -65,7 +84,6 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          
           <Box
             component="img"
             src={imagen}
@@ -80,9 +98,18 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
           <Typography variant="h6" color="textSecondary">
             {nombre}
           </Typography>
-          <Typography variant="h5" >
-           {precio} CUP
-          </Typography>
+
+          {/* Precio y selector de moneda */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: "#007bff" }}>
+              {convertPrice(precio, currency)} {currency}
+            </Typography>
+            <Select value={currency} onChange={handleCurrencyChange} sx={{ height: "40px", fontSize: "1rem" }}>
+              <MenuItem value="CUP">CUP</MenuItem>
+              <MenuItem value="USD">USD</MenuItem>
+            </Select>
+          </Box>
+
           <Typography variant="body1">
             Estado:{" "}
             <span
@@ -109,27 +136,15 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
               {subcategoriaNombre}
             </Link>
           </Typography>
-          <Typography variant="body2" >
-            Categoría: {categoriaNombre}
-          </Typography>
-          {color && (
-            <Typography variant="body2" >
-              Color: {color}
-            </Typography>
-          )}
-          {caracteristicas && (
-            <Typography variant="body2" >
-              Características: {caracteristicas}
-            </Typography>
-          )}
-          {componentes && (
-            <Typography variant="body2" >
-              Componentes: {componentes}
-            </Typography>
-          )}
+          <Typography variant="body2">Categoría: {categoriaNombre}</Typography>
+          {color && <Typography variant="body2">Color: {color}</Typography>}
+          {caracteristicas && <Typography variant="body2">Características: {caracteristicas}</Typography>}
+          {componentes && <Typography variant="body2">Componentes: {componentes}</Typography>}
           <Typography variant="body2" color="textSecondary">
             Fecha de Ingreso: {new Date(tiempo_creado).toLocaleDateString()}
           </Typography>
+
+          {/* Controles de cantidad y botón de agregar */}
           <Box
             sx={{
               display: "flex",
@@ -139,29 +154,11 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
             }}
           >
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <IconButton
-                color="primary"
-                onClick={handleDecreaseQuantity}
-                sx={{
-                  "&:focus": {
-                    outline: "none",
-                    boxShadow: "none",
-                  },
-                }}
-              >
+              <IconButton color="primary" onClick={handleDecreaseQuantity}>
                 <RemoveIcon />
               </IconButton>
               <Typography variant="body1">{quantity}</Typography>
-              <IconButton
-                color="primary"
-                onClick={handleIncreaseQuantity}
-                sx={{
-                  "&:focus": {
-                    outline: "none",
-                    boxShadow: "none",
-                  },
-                }}
-              >
+              <IconButton color="primary" onClick={handleIncreaseQuantity}>
                 <AddIcon />
               </IconButton>
             </Box>
@@ -177,6 +174,8 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
           </Box>
         </Box>
       </Paper>
+
+      {/* Descripción del producto */}
       <Paper
         sx={{
           border: "1px solid #ddd",
