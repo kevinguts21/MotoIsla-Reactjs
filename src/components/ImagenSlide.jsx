@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
@@ -8,6 +8,7 @@ import motorcycle from "../assets/Portada/moto.jpg"; // 1920x1080
 import service from "../assets/Portada/Services.png";
 import portada from "../assets/Portada/PortadaDesk.png";
 import repair from "../assets/Portada/repair.png";
+import remotorizacion from "../assets/Portada/Remotorizacion.png";
 
 // Custom Left Arrow
 const CustomPrevArrow = ({ onClick }) => (
@@ -55,6 +56,7 @@ const ImagenSlide = () => {
   const desktopImages = [
     { src: desktop, alt: "Desktop Image 1" },
     { src: portada, alt: "Desktop Image 2" },
+    { src: remotorizacion, alt: "Desktop Image 3" },
   ];
 
   const mobileImages = [
@@ -90,6 +92,20 @@ const ImagenSlide = () => {
     pauseOnHover: false, // Pause the autoplay when hovering
   };
 
+  // Estado de apertura de la tienda
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const currentDay = new Date().getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+    const currentTime = new Date().getHours();
+
+    if (currentDay !== 0 && currentTime >= 8 && currentTime < 16) {
+      setIsOpen(true);
+    } else {
+      setIsOpen(false);
+    }
+  }, []);
+
   return (
     <Box
       sx={{
@@ -99,6 +115,44 @@ const ImagenSlide = () => {
         margin: "0 auto",
       }}
     >
+      {/* Cartel de apertura */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: "5px",
+          right: "5px",
+          backgroundColor: "rgba(241, 241, 241, 0.66)",
+          padding: "5px",
+          borderRadius: "7px",
+          display: "flex",
+          alignItems: "center",
+          zIndex: 3, // Asegúrate de que esté por encima de otros elementos
+        }}
+      >
+        {isOpen ? (
+          <Box
+            sx={{
+              width: "13px",
+              height: "13px",
+              borderRadius: "50%",
+              backgroundColor: "green",
+              marginRight: "10px",
+            }}
+          />
+        ) : (
+          <Box
+            sx={{
+              width: "20px",
+              height: "20px",
+              borderRadius: "50%",
+              backgroundColor: "red",
+              marginRight: "10px",
+            }}
+          />
+        )}
+        {isOpen ? <b>Abierto</b> : <b>Cerrado</b>}
+      </Box>
+
       <Slider {...settings}>
         {imageList.map((image, index) => (
           <Box key={index}>

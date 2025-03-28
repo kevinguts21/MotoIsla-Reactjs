@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -16,11 +16,31 @@ import RemoveIcon from "@mui/icons-material/Remove";
 
 const ProductCard = ({ product, currency, convertPrice }) => {
   const [quantity, setQuantity] = useState(1);
-  const isMobile = useMediaQuery("(max-width:600px)"); // Detect mobile screen size
+  const [stock, setStock] = useState(0);
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  useEffect(() => {
+    const parsedCantidad = parseInt(product.cantidad_disponible, 10);
+
+    setStock(
+      !isNaN(parsedCantidad) && parsedCantidad >= 0 ? parsedCantidad : 0
+    );
+  }, [product]);
 
   const handleAddToCart = () => {
+    if (stock === 0) {
+      toast.error("Actualmente no tenemos en existencia este producto.");
+      return;
+    }
+
     const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
     const productInCart = cart.find((item) => item.id === product.id);
+    const existingQty = productInCart ? productInCart.quantity : 0;
+
+    if (existingQty + quantity > stock) {
+      toast.error("Ha alcanzado la cantidad máxima disponible.");
+      return;
+    }
 
     if (productInCart) {
       productInCart.quantity += quantity;
@@ -38,15 +58,25 @@ const ProductCard = ({ product, currency, convertPrice }) => {
     toast.success("Producto agregado al carrito");
   };
 
+  const handleIncrease = () => {
+    if (quantity < stock) {
+      setQuantity(quantity + 1);
+    } else {
+      toast.error("Ha alcanzado la cantidad máxima disponible.");
+    }
+  };
+
+  const handleDecrease = () => {
+    setQuantity(Math.max(1, quantity - 1));
+  };
+
   const isNewProduct = () => {
     const createdDate = new Date(product.tiempo_creado);
     const currentDate = new Date();
-    const timeDifference = currentDate - createdDate;
-    const daysDifference = timeDifference / (1000 * 3600 * 24);
+    const daysDifference = (currentDate - createdDate) / (1000 * 3600 * 24);
     return daysDifference <= 7;
   };
 
-  // Shared Styled Components
   const ProductContainer = styled(Box)(({ theme }) => ({
     position: "relative",
     border: "1px solid #ddd",
@@ -64,12 +94,10 @@ const ProductCard = ({ product, currency, convertPrice }) => {
     height: "150px",
     objectFit: "contain",
     marginBottom: "5px",
-
-    // Ajuste para móviles
     [theme.breakpoints.down("sm")]: {
-      maxHeight: "120px", // Evita que crezca demasiado en móviles
-      aspectRatio: "4 / 3", // Mantiene la proporción cuadrada
-      minWidth: "80px", // Evita que se haga muy pequeña
+      maxHeight: "120px",
+      aspectRatio: "4 / 3",
+      minWidth: "80px",
     },
   }));
 
@@ -99,29 +127,26 @@ const ProductCard = ({ product, currency, convertPrice }) => {
     fontWeight: "bold",
   }));
 
-  // Desktop View
   const DesktopView = () => (
     <ProductContainer
       sx={{
         display: "flex",
-        flexDirection: "column", // Asegura alineación en columna
-        justifyContent: "space-between", // Espaciado entre elementos
-        height: "100%", // Ocupa toda la altura disponible
+        flexDirection: "column",
+        justifyContent: "space-between",
+        height: "100%",
       }}
     >
       {isNewProduct() && <Ribbon>Nuevo</Ribbon>}
 
-      {/* Imagen del Producto */}
       <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>
         <ProductImage src={product.imagen} alt={product.nombre} />
       </Link>
 
-      {/* Detalles del Producto */}
       <Box
         sx={{
           paddingLeft: "10px",
           textAlign: "center",
-          marginBottom: "auto", // Empuja los elementos superiores hacia arriba
+          marginBottom: "auto",
         }}
       >
         <Typography variant="h6">{product.nombre}</Typography>
@@ -135,40 +160,37 @@ const ProductCard = ({ product, currency, convertPrice }) => {
         )}
       </Box>
 
-      {/* Divider siempre al fondo */}
       <Divider sx={{ marginY: 1 }} />
 
-      {/* Controles de Cantidad y Botón Agregar */}
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           paddingX: "10px",
-          marginTop: "sticky", // Posiciona este bloque siempre al final
         }}
       >
-        {/* Controles de Cantidad */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <IconButton onClick={() => setQuantity(Math.max(quantity - 1, 1))}>
+          <IconButton onClick={handleDecrease} disabled={stock === 0}>
             <RemoveIcon />
           </IconButton>
           <Typography variant="body1" sx={{ mx: 1 }}>
             {quantity}
           </Typography>
-          <IconButton onClick={() => setQuantity(quantity + 1)}>
+          <IconButton onClick={handleIncrease} disabled={quantity >= stock}>
             <AddIcon />
           </IconButton>
         </Box>
+
         <Divider orientation="vertical" sx={{ marginLeft: "80px" }} />
 
-        {/* Botón Agregar al Carrito */}
         <Tooltip title="Agregar al carrito" arrow>
           <CartButton
             onClick={(e) => {
               e.preventDefault();
               handleAddToCart();
             }}
+            disabled={stock === 0}
           >
             <AddShoppingCartIcon />
           </CartButton>
@@ -177,26 +199,24 @@ const ProductCard = ({ product, currency, convertPrice }) => {
     </ProductContainer>
   );
 
-  // Mobile View
   const MobileView = () => (
     <ProductContainer
       sx={{
         display: "flex",
-        flexDirection: "row", // Imagen a la izquierda, contenido a la derecha
-        alignItems: "stretch", // Asegura que ambos lados tengan la misma altura
+        flexDirection: "row",
+        alignItems: "stretch",
         padding: "5px",
         height: "auto",
         marginRight: "15px",
       }}
     >
-      {/* Contenedor de la Imagen */}
       <Box
         sx={{
           flex: "1 1 auto",
           height: "100%",
-          maxWidth: "150px", // Tamaño fijo para la imagen
+          maxWidth: "150px",
           display: "flex",
-          flexDirection: "column", // Apila la imagen y el Ribbon verticalmente
+          flexDirection: "column",
         }}
       >
         <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>
@@ -211,7 +231,6 @@ const ProductCard = ({ product, currency, convertPrice }) => {
           />
         </Link>
 
-        {/* Ribbon debajo de la imagen */}
         {isNewProduct() && (
           <Ribbon
             sx={{
@@ -220,7 +239,7 @@ const ProductCard = ({ product, currency, convertPrice }) => {
               color: "white",
               fontSize: "10px",
               fontWeight: "bold",
-              padding: "0.1px 2px", // Más fino
+              padding: "0.1px 2px",
               borderRadius: "3px",
               textAlign: "center",
             }}
@@ -230,17 +249,15 @@ const ProductCard = ({ product, currency, convertPrice }) => {
         )}
       </Box>
 
-      {/* Información del producto y controles */}
       <Box
         sx={{
           flex: "2 1 auto",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          padding: "20px 15px", // Más padding para aprovechar el espacio
+          padding: "20px 15px",
         }}
       >
-        {/* Información del producto */}
         <Box>
           <Typography
             variant="h6"
@@ -265,19 +282,18 @@ const ProductCard = ({ product, currency, convertPrice }) => {
           )}
         </Box>
 
-        {/* Controles del carrito */}
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: "auto", // Empuja los controles hacia abajo
+            marginTop: "auto",
           }}
         >
-          {/* Controles de cantidad */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
-              onClick={() => setQuantity(Math.max(quantity - 1, 1))}
+              onClick={handleDecrease}
+              disabled={stock === 0}
               sx={{ padding: "8px" }}
             >
               <RemoveIcon />
@@ -286,24 +302,22 @@ const ProductCard = ({ product, currency, convertPrice }) => {
               {quantity}
             </Typography>
             <IconButton
-              onClick={() => setQuantity(quantity + 1)}
+              onClick={handleIncrease}
+              disabled={quantity >= stock}
               sx={{ padding: "8px" }}
             >
               <AddIcon />
             </IconButton>
           </Box>
 
-          {/* Botón de agregar al carrito */}
           <Tooltip title="Agregar al carrito" arrow>
             <CartButton
               onClick={(e) => {
                 e.preventDefault();
                 handleAddToCart();
               }}
-              sx={{
-                padding: "10px",
-                marginLeft: "10px",
-              }}
+              disabled={stock === 0}
+              sx={{ padding: "10px", marginLeft: "10px" }}
             >
               <AddShoppingCartIcon />
             </CartButton>
