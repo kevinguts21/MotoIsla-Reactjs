@@ -137,6 +137,7 @@ const ProductCard = ({ product, currency, convertPrice }) => {
       }}
     >
       {isNewProduct() && <Ribbon>Nuevo</Ribbon>}
+      {stock === 0 && <Ribbon sx={{ top: 40, backgroundColor: "#d32f2f" }}>Agotado</Ribbon>}
 
       <Link to={`/product/${product.id}`} style={{ textDecoration: "none" }}>
         <ProductImage src={product.imagen} alt={product.nombre} />
@@ -245,6 +246,24 @@ const ProductCard = ({ product, currency, convertPrice }) => {
             }}
           >
             Nuevo
+          </Ribbon>
+        )}
+
+        {stock === 0 && (
+          <Ribbon
+            sx={{
+              marginTop: "20px",
+              backgroundColor: "#d32f2f",
+              color: "white",
+              fontSize: "10px",
+              left:"20px",
+              fontWeight: "bold",
+              padding: "0.1px 2px",
+              borderRadius: "3px",
+              textAlign: "center",
+            }}
+          >
+            Agotado
           </Ribbon>
         )}
       </Box>

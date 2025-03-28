@@ -142,8 +142,8 @@ const ImagenSlide = () => {
         ) : (
           <Box
             sx={{
-              width: "20px",
-              height: "20px",
+              width: "13px",
+              height: "13px",
               borderRadius: "50%",
               backgroundColor: "red",
               marginRight: "10px",
