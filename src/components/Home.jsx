@@ -190,10 +190,11 @@ const Home = ({ filteredProducts, loading }) => {
               onClick={resetFilters}
               startIcon={<CleaningServicesOutlinedIcon />}
               sx={{
+                marginLeft:"10%",
                 textTransform: "none",
                 fontSize: "0.9rem",
                 borderRadius: "20px",
-                paddingX: 2,
+                paddingX: 6,
               }}
             >
               Limpiar filtros
