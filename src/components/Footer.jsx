@@ -43,7 +43,7 @@ const Footer = () => {
             fontWeight: "bold",
             textDecoration: "none",
             "&:hover": {
-              color: "#e94f5b", // Cambia el color a rojo al pasar el cursor
+              color: "#e94f5b", 
             },
           }}
         >
@@ -69,7 +69,7 @@ const Footer = () => {
         </Grid>
         <Grid item>
           <Link
-            href="https://www.instagram.com/moto.islasurl/"
+            href="https://www.instagram.com/moto_isla.surl/"
             sx={{ color: "white", "&:hover": { color: "#e94f5b" } }}
           >
             <Instagram />
@@ -82,7 +82,7 @@ const Footer = () => {
         variant="body2"
         sx={{ fontSize: "0.9rem", marginTop: "10px" }}
       >
-        © 2024 Todos los derechos reservados.
+        © 2025 Todos los derechos reservados.
       </Typography>
     </Box>
   );
