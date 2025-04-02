@@ -3,12 +3,13 @@ import Slider from "react-slick";
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import desktop from "../assets/Portada/Dekstop.png"; // 1920x510
-import motorcycle from "../assets/Portada/moto.jpg"; // 1920x1080
+import desktop from "../assets/Portada/Dekstop.png"; 
+import motorcycle from "../assets/Portada/moto.jpg"; 
 import service from "../assets/Portada/Services.png";
 import portada from "../assets/Portada/PortadaDesk.png";
 import repair from "../assets/Portada/repair.png";
 import remotorizacion from "../assets/Portada/Remotorizacion.png";
+import Remoto from "../assets/Portada/Remoto.png"
 
 // Custom Left Arrow
 const CustomPrevArrow = ({ onClick }) => (
@@ -63,6 +64,7 @@ const ImagenSlide = () => {
     { src: service, alt: "Mobile Image 1" },
     { src: motorcycle, alt: "Mobile Image 2" },
     { src: repair, alt: "Mobile Image 3" },
+    { src: Remoto, alt: "Mobile Image 4" },
   ];
 
   // Select images based on the view

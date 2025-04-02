@@ -101,10 +101,17 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
 
           {/* Precio y selector de moneda */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Typography variant="h5" sx={{ fontWeight: "bold", color: "#007bff" }}>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: "bold", color: "#007bff" }}
+            >
               {convertPrice(precio, currency)} {currency}
             </Typography>
-            <Select value={currency} onChange={handleCurrencyChange} sx={{ height: "40px", fontSize: "1rem" }}>
+            <Select
+              value={currency}
+              onChange={handleCurrencyChange}
+              sx={{ height: "40px", fontSize: "1rem" }}
+            >
               <MenuItem value="CUP">CUP</MenuItem>
               <MenuItem value="USD">USD</MenuItem>
             </Select>
@@ -138,8 +145,14 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
           </Typography>
           <Typography variant="body2">Categoría: {categoriaNombre}</Typography>
           {color && <Typography variant="body2">Color: {color}</Typography>}
-          {caracteristicas && <Typography variant="body2">Características: {caracteristicas}</Typography>}
-          {componentes && <Typography variant="body2">Componentes: {componentes}</Typography>}
+          {caracteristicas && (
+            <Typography variant="body2">
+              Características: {caracteristicas}
+            </Typography>
+          )}
+          {componentes && (
+            <Typography variant="body2">Componentes: {componentes}</Typography>
+          )}
           <Typography variant="body2" color="textSecondary">
             Fecha de Ingreso: {new Date(tiempo_creado).toLocaleDateString()}
           </Typography>
@@ -158,7 +171,11 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
                 <RemoveIcon />
               </IconButton>
               <Typography variant="body1">{quantity}</Typography>
-              <IconButton color="primary" onClick={handleIncreaseQuantity}>
+              <IconButton
+                color="primary"
+                onClick={handleIncreaseQuantity}
+                disabled={quantity >= cantidad_disponible} 
+              >
                 <AddIcon />
               </IconButton>
             </Box>

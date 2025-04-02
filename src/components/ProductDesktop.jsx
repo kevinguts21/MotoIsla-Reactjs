@@ -244,6 +244,7 @@ const ProductDetailDesktop = ({
             <IconButton
               color="primary"
               onClick={handleIncreaseQuantity}
+              disabled={quantity >= cantidad_disponible}
               sx={{
                 "&:focus": {
                   outline: "none",
