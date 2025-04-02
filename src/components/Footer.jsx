@@ -26,10 +26,10 @@ const Footer = () => {
       >
         ¿Ayuda? <br />
         <Typography
-          variant="body1" // Corrección de typo aquí
+          variant="body1"
           sx={{
             color: "white",
-            fontSize: "1rem", // Corrección de typo aquí
+            fontSize: "1rem",
             marginBottom: "10px",
           }}
         >
@@ -43,11 +43,26 @@ const Footer = () => {
             fontWeight: "bold",
             textDecoration: "none",
             "&:hover": {
-              color: "#e94f5b", 
+              color: "#e94f5b",
             },
           }}
         >
           +5359874553
+        </Link>
+      </Typography>
+
+      {/* Enlace a Preguntas Frecuentes */}
+      <Typography variant="body1" sx={{ marginBottom: "10px" }}>
+        <Link
+          href="/F&Qpage"
+          sx={{
+            color: "#e94f5b",
+            fontWeight: "bold",
+            textDecoration: "none",
+            "&:hover": { color: "grey" },
+          }}
+        >
+          Preguntas Frecuentes
         </Link>
       </Typography>
 
