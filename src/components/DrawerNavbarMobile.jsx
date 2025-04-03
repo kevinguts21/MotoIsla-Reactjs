@@ -22,7 +22,11 @@ import { Link } from "react-router-dom";
 
 const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
   return (
-    <Drawer anchor="right" open={drawerOpen} onClose={() => toggleDrawer(false)}>
+    <Drawer
+      anchor="right"
+      open={drawerOpen}
+      onClose={() => toggleDrawer(false)}
+    >
       <Box
         sx={{
           width: 200,
@@ -38,7 +42,6 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
         onClick={() => toggleDrawer(false)}
         onKeyDown={() => toggleDrawer(false)}
       >
-        {/* Header del Drawer */}
         <Paper
           sx={{
             backgroundColor: "#ffffffcc",
@@ -48,15 +51,27 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
             mb: 2,
           }}
         >
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <Typography variant="h5" sx={{ fontFamily: "'Qaranta', sans-serif", color: "#333" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography
+              variant="h5"
+              sx={{ fontFamily: "'Qaranta', sans-serif", color: "#333" }}
+            >
               Moto Isla
             </Typography>
             <IconButton onClick={() => toggleDrawer(false)}>
               <CloseIcon sx={{ color: "#333" }} />
             </IconButton>
           </Box>
-          <Typography variant="body2" sx={{ color: "gray", fontFamily: "'Qaranta', sans-serif" }}>
+          <Typography
+            variant="body2"
+            sx={{ color: "gray", fontFamily: "'Qaranta', sans-serif" }}
+          >
             Hola, bienvenido
           </Typography>
         </Paper>
@@ -64,43 +79,84 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
         {/* Menú de navegación */}
         <List>
           <ListItem button component={Link} to="/" sx={{ padding: "16px 0" }}>
-            <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
+            <ListItemIcon sx={{ minWidth: 0, mr: 1 }}>
               <HomeIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Inicio" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary={<b style={{ color: "black" }}>Inicio</b>} />
           </ListItem>
 
-          <ListItem button component={Link} to="/cart" sx={{ padding: "16px 0" }}>
-            <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
+          <ListItem
+            button
+            component={Link}
+            to="/cart"
+            sx={{ padding: "16px 0" }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 1 }}>
               <ShoppingCartIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Carrito" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary={<b style={{ color: "black" }}>Carrito</b>} />
           </ListItem>
 
-          <ListItem button component={Link} to="/about" sx={{ padding: "16px 0" }}>
-            <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
+          <ListItem
+            button
+            component={Link}
+            to="/about"
+            sx={{ padding: "16px 0" }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 1 }}>
               <InfoIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Sobre Nosotros" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText primary={<b style={{ color: "black" }}>Sobre Nosotros</b>}/>
           </ListItem>
 
-          <ListItem button component="a" href="https://wa.me/5359874553" target="_blank" sx={{ padding: "16px 0" }}>
-            <ListItemIcon sx={{ fontSize: "1.8rem", marginLeft: "8px" }}>
+          <ListItem
+            button
+            component="a"
+            href="https://wa.me/5359874553"
+            target="_blank"
+            sx={{ padding: "16px 0" }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 1 }}>
               <WhatsAppIcon sx={{ fontSize: "1.8rem" }} />
             </ListItemIcon>
-            <ListItemText primary="Contáctenos" sx={{ color: "black", fontSize: "1.0rem" }} />
+            <ListItemText
+              primary={<b style={{ color: "black" }}>Contáctenos</b>}
+            />
           </ListItem>
         </List>
 
         {/* Redes Sociales */}
-        <Box sx={{ marginTop: "auto", padding: "10px", borderRadius: "8px", backgroundColor: "#ffffffcc", boxShadow: "0px -2px 6px rgba(0,0,0,0.2)" }}>
-          <Box sx={{ display: "flex", justifyContent: "center", gap: "20px", color: "#333" }}>
-            <a href="https://www.facebook.com/profile.php?id=100089351164595" target="_blank" rel="noopener noreferrer">
+        <Box
+          sx={{
+            marginTop: "auto",
+            padding: "10px",
+            borderRadius: "8px",
+            backgroundColor: "#ffffffcc",
+            boxShadow: "0px -2px 6px rgba(0,0,0,0.2)",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "20px",
+              color: "#333",
+            }}
+          >
+            <a
+              href="https://www.facebook.com/profile.php?id=100089351164595"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <IconButton>
                 <FacebookIcon />
               </IconButton>
             </a>
-            <a href="https://www.instagram.com/moto.islasurl/" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://www.instagram.com/moto_isla.surl/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <IconButton>
                 <InstagramIcon />
               </IconButton>

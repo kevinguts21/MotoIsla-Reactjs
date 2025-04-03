@@ -69,7 +69,7 @@ const About = () => {
           <CallIcon />
           Teléfono:
           <a href="tel:53036894" className="contact-link">
-            +5346335214
+            +5353036894
           </a>
         </p>
         <p className="location">

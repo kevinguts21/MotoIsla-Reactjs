@@ -4,7 +4,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import ProductDetailDesktop from "./ProductDesktop";
 import ProductDetailMobile from "./ProductDetailMobile";
 import { CircularProgress, Typography } from "@mui/material";
-import AxiosInstance from "./Axios"; 
+import AxiosInstance from "./Axios";
+import Moneda from "./Home/Moneda.jsx";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -12,6 +13,7 @@ const ProductDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [currency, setCurrency] = useState("CUP"); // Estado para la moneda
   const isMobile = useMediaQuery("(max-width: 600px)");
 
   useEffect(() => {
@@ -19,22 +21,28 @@ const ProductDetail = () => {
       try {
         const { data } = await AxiosInstance.get(`/productos/${id}/`);
         setProduct(data);
-        setLoading(false);
       } catch (err) {
         console.error("Error fetching product data:", err);
         setError("Producto no encontrado.");
+      } finally {
         setLoading(false);
       }
     };
     fetchProductData();
   }, [id]);
 
-  const convertPrice = (price) => {
-    const exchangeRate = 320; // 1 USD = 320 CUP (ejemplo)
-    return (price * exchangeRate).toLocaleString("en-US", {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
+  const handleCurrencyChange = (selectedCurrency) => {
+    setCurrency(selectedCurrency);
+  };
+
+  const convertPrice = (priceInCUP) => {
+    const exchangeRate = 340; // 1 USD = 340 CUP
+    return currency === "USD"
+      ? (priceInCUP / exchangeRate).toFixed(2)
+      : priceInCUP.toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
   };
 
   const handleAddToCart = () => {
@@ -47,14 +55,15 @@ const ProductDetail = () => {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: product.precio,
+        precio: convertPrice(product.precio), // Asegura que el precio se guarda en la moneda actual
         cantidad: quantity,
         imagen: product.imagen,
+        moneda: currency, // Guarda la moneda seleccionada
       });
     }
 
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${product.nombre} añadido al carrito.`);
+    alert(`${product.nombre} añadido al carrito en ${currency}.`);
   };
 
   if (loading) {
@@ -81,22 +90,29 @@ const ProductDetail = () => {
 
   if (!product) return null;
 
-  return isMobile ? (
-    <ProductDetailMobile
-      product={product}
-      convertPrice={convertPrice}
-      quantity={quantity}
-      setQuantity={setQuantity}
-      handleAddToCart={handleAddToCart}
-    />
-  ) : (
-    <ProductDetailDesktop
-      product={product}
-      convertPrice={convertPrice}
-      handleSubcategoryClick={(id) =>
-        console.log("Navigating to subcategory", id)
-      }
-    />
+  return (
+    <div>
+      {/* Selector de moneda */}
+      <Moneda onCurrencyChange={handleCurrencyChange} />
+
+      {isMobile ? (
+        <ProductDetailMobile
+          product={product}
+          convertPrice={convertPrice}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          handleAddToCart={handleAddToCart}
+        />
+      ) : (
+        <ProductDetailDesktop
+          product={product}
+          convertPrice={convertPrice}
+          handleSubcategoryClick={(id) =>
+            console.log("Navigating to subcategory", id)
+          }
+        />
+      )}
+    </div>
   );
 };
 

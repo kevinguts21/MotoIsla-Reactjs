@@ -26,10 +26,10 @@ const Footer = () => {
       >
         ¿Ayuda? <br />
         <Typography
-          variant="body1" // Corrección de typo aquí
+          variant="body1"
           sx={{
             color: "white",
-            fontSize: "1rem", // Corrección de typo aquí
+            fontSize: "1rem",
             marginBottom: "10px",
           }}
         >
@@ -43,11 +43,26 @@ const Footer = () => {
             fontWeight: "bold",
             textDecoration: "none",
             "&:hover": {
-              color: "#e94f5b", // Cambia el color a rojo al pasar el cursor
+              color: "#e94f5b",
             },
           }}
         >
           +5359874553
+        </Link>
+      </Typography>
+
+      {/* Enlace a Preguntas Frecuentes */}
+      <Typography variant="body1" sx={{ marginBottom: "10px" }}>
+        <Link
+          href="/F&Qpage"
+          sx={{
+            color: "#e94f5b",
+            fontWeight: "bold",
+            textDecoration: "none",
+            "&:hover": { color: "grey" },
+          }}
+        >
+          Preguntas Frecuentes
         </Link>
       </Typography>
 
@@ -69,7 +84,7 @@ const Footer = () => {
         </Grid>
         <Grid item>
           <Link
-            href="https://www.instagram.com/moto.islasurl/"
+            href="https://www.instagram.com/moto_isla.surl/"
             sx={{ color: "white", "&:hover": { color: "#e94f5b" } }}
           >
             <Instagram />
@@ -82,7 +97,7 @@ const Footer = () => {
         variant="body2"
         sx={{ fontSize: "0.9rem", marginTop: "10px" }}
       >
-        © 2024 Todos los derechos reservados.
+        © 2025 Todos los derechos reservados.
       </Typography>
     </Box>
   );
