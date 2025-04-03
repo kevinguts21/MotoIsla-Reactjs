@@ -18,7 +18,9 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import proof from "../assets/proof.jpg";
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { Link } from "react-router-dom";
+
 
 const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
   return (
@@ -108,6 +110,19 @@ const DrawerNavbarMobile = ({ drawerOpen, toggleDrawer }) => {
             </ListItemIcon>
             <ListItemText primary={<b style={{ color: "black" }}>Sobre Nosotros</b>}/>
           </ListItem>
+
+          <ListItem
+            button
+            component={Link}
+            to="/f&qpage"
+            sx={{ padding: "16px 0" }}
+          >
+            <ListItemIcon sx={{ minWidth: 0, mr: 1 }}>
+              <HelpOutlineIcon sx={{ fontSize: "1.8rem" }} />
+            </ListItemIcon>
+            <ListItemText primary={<b style={{ color: "black" }}>Preguntas Frecuentes</b>}/>
+          </ListItem>
+          
 
           <ListItem
             button
