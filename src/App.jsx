@@ -13,6 +13,7 @@ import { Toaster } from "react-hot-toast";
 import { useMediaQuery } from "@mui/material";
 import ImagenSlide from "./components/ImagenSlide";
 import AxiosInstance from "./components/Axios";
+// no sale aqui lo nuevo ni el componente
 
 function App() {
   const [products, setProducts] = useState([]);
