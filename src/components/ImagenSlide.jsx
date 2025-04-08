@@ -3,15 +3,14 @@ import Slider from "react-slick";
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import desktop from "../assets/Portada/Dekstop.png"; 
-import motorcycle from "../assets/Portada/moto.jpg"; 
+import desktop from "../assets/Portada/Dekstop.png";
+import motorcycle from "../assets/Portada/moto.jpg";
 import service from "../assets/Portada/Services.png";
 import portada from "../assets/Portada/PortadaDesk.png";
 import repair from "../assets/Portada/repair.png";
 import remotorizacion from "../assets/Portada/Remotorizacion.png";
-import Remoto from "../assets/Portada/Remoto.png"
+import Remoto from "../assets/Portada/Remoto.png";
 
-// Custom Left Arrow
 const CustomPrevArrow = ({ onClick }) => (
   <IconButton
     onClick={onClick}
@@ -30,7 +29,6 @@ const CustomPrevArrow = ({ onClick }) => (
   </IconButton>
 );
 
-// Custom Right Arrow
 const CustomNextArrow = ({ onClick }) => (
   <IconButton
     onClick={onClick}
@@ -50,10 +48,65 @@ const CustomNextArrow = ({ onClick }) => (
 );
 
 const ImagenSlide = () => {
-  // Detect if the view is mobile
   const isMobile = useMediaQuery("(max-width:960px)");
+  const [isOpen, setIsOpen] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+  const [timeUntilOpen, setTimeUntilOpen] = useState("");
 
-  // Images for desktop and mobile views
+  const openingHour = 8;
+  const closingHour = 16;
+
+  useEffect(() => {
+    const now = new Date();
+    const currentDay = now.getDay();
+    const currentHour = now.getHours();
+    setIsOpen(currentDay !== 0 && currentHour >= openingHour && currentHour < closingHour);
+  }, []);
+
+  const getNextOpeningTime = () => {
+    const now = new Date();
+    const nextOpening = new Date(now);
+    if (now.getDay() === 0 || now.getHours() >= closingHour) {
+      nextOpening.setDate(now.getDate() + 1);
+      nextOpening.setHours(openingHour, 0, 0, 0);
+    } else if (now.getHours() < openingHour) {
+      nextOpening.setHours(openingHour, 0, 0, 0);
+    }
+    return nextOpening;
+  };
+
+  useEffect(() => {
+    if (!isOpen) {
+      const interval = setInterval(() => {
+        const now = new Date();
+        const diff = getNextOpeningTime() - now;
+        const h = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, "0");
+        const m = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, "0");
+        const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
+        setTimeUntilOpen(`${h}:${m}:${s}`);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [isOpen]);
+
+  const handleMouseEnter = () => {
+    if (!isMobile) setShowInfo(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (!isMobile) setShowInfo(false);
+  };
+
+  const handleClick = () => {
+    if (isMobile) setShowInfo((prev) => !prev);
+  };
+
+  const formatTime12 = (hour) => {
+    const h = hour % 12 || 12;
+    const ampm = hour < 12 ? "am" : "pm";
+    return `${h}:00 ${ampm}`;
+  };
+
   const desktopImages = [
     { src: desktop, alt: "Desktop Image 1" },
     { src: portada, alt: "Desktop Image 2" },
@@ -67,7 +120,6 @@ const ImagenSlide = () => {
     { src: Remoto, alt: "Mobile Image 4" },
   ];
 
-  // Select images based on the view
   const imageList = isMobile ? mobileImages : desktopImages;
 
   const settings = {
@@ -76,37 +128,23 @@ const ImagenSlide = () => {
     speed: 900,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true, // Enable auto-slide
-    autoplaySpeed: 4500, // Time between slides (3.5 seconds)
-    nextArrow: <CustomNextArrow />, // Custom Right Arrow
-    prevArrow: <CustomPrevArrow />, // Custom Left Arrow
+    autoplay: true,
+    autoplaySpeed: 4500,
+    nextArrow: <CustomNextArrow />,
+    prevArrow: <CustomPrevArrow />,
     appendDots: (dots) => (
       <div
         style={{
           position: "absolute",
-          bottom: "20px", // Adjust this value to move dots higher or lower
+          bottom: "20px",
           width: "100%",
         }}
       >
         <ul style={{ margin: "0", padding: "0" }}>{dots}</ul>
       </div>
     ),
-    pauseOnHover: false, // Pause the autoplay when hovering
+    pauseOnHover: false,
   };
-
-  // Estado de apertura de la tienda
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const currentDay = new Date().getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
-    const currentTime = new Date().getHours();
-
-    if (currentDay !== 0 && currentTime >= 8 && currentTime < 16) {
-      setIsOpen(true);
-    } else {
-      setIsOpen(false);
-    }
-  }, []);
 
   return (
     <Box
@@ -117,42 +155,47 @@ const ImagenSlide = () => {
         margin: "0 auto",
       }}
     >
-      {/* Cartel de apertura */}
       <Box
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
         sx={{
           position: "absolute",
           top: "5px",
           right: "5px",
           backgroundColor: "rgba(241, 241, 241, 0.66)",
-          padding: "5px",
+          padding: "5px 10px",
           borderRadius: "7px",
           display: "flex",
-          alignItems: "center",
-          zIndex: 3, // Asegúrate de que esté por encima de otros elementos
+          flexDirection: "column",
+          alignItems: "flex-start",
+          zIndex: 3,
+          transition: "all 0.3s ease",
+          cursor: isMobile ? "pointer" : "default",
+          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
         }}
       >
-        {isOpen ? (
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <Box
             sx={{
               width: "13px",
               height: "13px",
               borderRadius: "50%",
-              backgroundColor: "green",
+              backgroundColor: isOpen ? "green" : "red",
               marginRight: "10px",
             }}
           />
-        ) : (
-          <Box
-            sx={{
-              width: "13px",
-              height: "13px",
-              borderRadius: "50%",
-              backgroundColor: "red",
-              marginRight: "10px",
-            }}
-          />
+          <b>{isOpen ? "Abierto" : "Cerrado"}</b>
+        </Box>
+        {showInfo && (
+          <Box sx={{ marginTop: "5px", fontSize: "0.85rem" }}>
+            {isOpen ? (
+              <span>{`Horario: ${formatTime12(openingHour)} - ${formatTime12(closingHour)}`}</span>
+            ) : (
+              <span>{`Abrimos en ${timeUntilOpen}`}</span>
+            )}
+          </Box>
         )}
-        {isOpen ? <b>Abierto</b> : <b>Cerrado</b>}
       </Box>
 
       <Slider {...settings}>
