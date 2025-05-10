@@ -5,9 +5,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import desktop from "../assets/Portada/Dekstop.png";
 import motorcycle from "../assets/Portada/moto.jpg";
-import service from "../assets/Portada/Services.png";
 import portada from "../assets/Portada/PortadaDesk.png";
-import repair from "../assets/Portada/repair.png";
 import remotorizacion from "../assets/Portada/Remotorizacion.png";
 import Remoto from "../assets/Portada/Remoto.png";
 
@@ -60,7 +58,11 @@ const ImagenSlide = () => {
     const now = new Date();
     const currentDay = now.getDay();
     const currentHour = now.getHours();
-    setIsOpen(currentDay !== 0 && currentHour >= openingHour && currentHour < closingHour);
+    setIsOpen(
+      currentDay !== 0 &&
+        currentHour >= openingHour &&
+        currentHour < closingHour
+    );
   }, []);
 
   const getNextOpeningTime = () => {
@@ -114,9 +116,7 @@ const ImagenSlide = () => {
   ];
 
   const mobileImages = [
-    { src: service, alt: "Mobile Image 1" },
     { src: motorcycle, alt: "Mobile Image 2" },
-    { src: repair, alt: "Mobile Image 3" },
     { src: Remoto, alt: "Mobile Image 4" },
   ];
 
@@ -155,7 +155,7 @@ const ImagenSlide = () => {
         margin: "0 auto",
       }}
     >
-      <Box
+      {/*  <Box
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onClick={handleClick}
@@ -196,7 +196,7 @@ const ImagenSlide = () => {
             )}
           </Box>
         )}
-      </Box>
+      </Box>*/}
 
       <Slider {...settings}>
         {imageList.map((image, index) => (

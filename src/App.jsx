@@ -13,7 +13,8 @@ import { Toaster } from "react-hot-toast";
 import { useMediaQuery } from "@mui/material";
 import ImagenSlide from "./components/ImagenSlide";
 import AxiosInstance from "./components/Axios";
-import FAQPage from "./components/F&Qpage"; // 🔥 Importación de Preguntas Frecuentes
+import FAQPage from "./components/F&Qpage";
+import Purchase from "./components/Cart/Purchase";
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -116,7 +117,9 @@ function App() {
               }
             />
             <Route path="/cart" element={<Cart isMobile={isMobile} />} />
-            <Route path="/F&Qpage" element={<FAQPage />} /> {/* ✅ Nueva Ruta */}
+            <Route path="/F&Qpage" element={<FAQPage />} />
+
+            <Route path="/purchase" element={<Purchase />} />
           </Routes>
         </div>
 

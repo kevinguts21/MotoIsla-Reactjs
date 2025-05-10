@@ -18,8 +18,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
 import { CartContext } from "./CartContext";
 import emptyCartImage from "./EmptyC.png";
-import GeneratePDFAndPurchase from "./GeneratePDFAndPurchase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 import "./Cart.css";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -29,6 +28,7 @@ const Cart = () => {
     useContext(CartContext);
   const [open, setOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const navigate = useNavigate();
 
   const handleOpenDialog = () => setOpen(true);
   const handleCloseDialog = () => setOpen(false);
@@ -53,6 +53,10 @@ const Cart = () => {
     0
   );
 
+  const handlePurchaseRedirect = () => {
+    navigate("/purchase");
+  };
+
   return (
     <Box className="cart-container">
       <Toaster />
@@ -62,7 +66,7 @@ const Cart = () => {
           fontFamily={"Qaranta"}
           sx={{ alignItems: "center" }}
         >
-          Carrito <ShoppingCartIcon />{" "}
+          Carrito <ShoppingCartIcon />
         </Typography>
         {cart.length > 0 && (
           <Button
@@ -80,6 +84,7 @@ const Cart = () => {
           </Button>
         )}
       </Box>
+
       <Typography
         variant="h6"
         className="total-amount"
@@ -169,18 +174,10 @@ const Cart = () => {
                         {item.nombre}
                       </Typography>
                     </Link>
-                    <Typography
-                      sx={{
-                        color: "gray",
-                      }}
-                    >
+                    <Typography sx={{ color: "gray" }}>
                       Precio Unitario: {item.precio} CUP
                     </Typography>
-                    <Typography
-                      sx={{
-                        color: "gray",
-                      }}
-                    >
+                    <Typography sx={{ color: "gray" }}>
                       Importe Total: {item.precio * item.quantity} CUP
                     </Typography>
                   </Box>
@@ -190,17 +187,11 @@ const Cart = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    flexWrap: "wrap", // Permite que los elementos se ajusten en pantallas pequeñas
+                    flexWrap: "wrap",
                     gap: 1,
                   }}
                 >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      alignItems: "center",
-                    }}
-                  >
+                  <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
                     <IconButton
                       onClick={() =>
                         updateQuantity(item.id, Math.max(item.quantity - 1, 1))
@@ -226,7 +217,6 @@ const Cart = () => {
                     </IconButton>
                   </Box>
 
-                  
                   <IconButton
                     onClick={() => handleRemoveItem(item.id)}
                     sx={{
@@ -296,14 +286,8 @@ const Cart = () => {
                       }
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "red" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <RemoveIcon />
@@ -313,14 +297,8 @@ const Cart = () => {
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       sx={{
                         color: "grey",
-
-                        "&:hover": {
-                          color: "green",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "green" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <AddIcon />
@@ -329,14 +307,8 @@ const Cart = () => {
                       onClick={() => handleRemoveItem(item.id)}
                       sx={{
                         color: "#d32f2f",
-
-                        "&:hover": {
-                          color: "red",
-                        },
-                        "&:focus": {
-                          outline: "none",
-                          boxShadow: "none",
-                        },
+                        "&:hover": { color: "red" },
+                        "&:focus": { outline: "none", boxShadow: "none" },
                       }}
                     >
                       <DeleteIcon />
@@ -349,10 +321,23 @@ const Cart = () => {
         </Box>
       )}
       {cart.length >= 1 && (
-        <Box sx={{ marginTop: 2 }}>
-          <GeneratePDFAndPurchase />
+        <Box sx={{ marginTop: 2, display: "flex", justifyContent: "center" }}>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handlePurchaseRedirect}
+            sx={{
+              borderRadius: "111px",
+              padding: "10px 20px",
+              fontWeight: "bold",
+              "&:focus": { outline: "none" },
+            }}
+          >
+            Continuar con el pedido
+          </Button>
         </Box>
       )}
+
       <Dialog
         open={open}
         onClose={handleCloseDialog}
