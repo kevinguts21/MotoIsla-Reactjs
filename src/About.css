@@ -36,11 +36,8 @@ h2 {
 }
 
 .about-image {
-  width: 400px;
-  height: auto;
-  border-radius: 5px;
-  border: 2px solid #333333;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  transition: opacity 0.3s ease;
 }
 
 .main-content {
@@ -198,15 +195,22 @@ p {
     max-width: 400px;
   }
 
-  .services-container {
-    flex-direction: column;
-    align-items: center;
-  }
+.service p {
+  transition: all 0.7s ease;
+}
 
-  .service {
-    width: 90%;
-    margin-bottom: 20px;
-  }
+.service p.show-more {
+  max-height: 500px; /* Altura máxima suficiente para el texto */
+  opacity: 1;
+  overflow: hidden;
+}
+
+.service p.hide {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
 
   .slogan {
     font-size: 1.2em;
@@ -217,10 +221,13 @@ p {
     font-size: 1.5em;
   }
 
-  .qaranta-title {
-    font-size: 1.5rem;
-  }
-
+.qaranta-title {
+  transition: transform 0.3s ease;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+  transform-origin: center;
+}
   .main-content {
     padding: 10px;
   }
@@ -282,5 +289,37 @@ p {
     margin: 25px auto;
   }
 }
+.hero-logo-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  background: linear-gradient(to bottom, #ffffff, #f0f0f0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-logo {
+  max-width: 200px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1s ease forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
 
 

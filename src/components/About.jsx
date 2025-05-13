@@ -1,22 +1,68 @@
-import React, { useState } from "react";
-import "../About.css"; // Archivo CSS para estilos personalizados
+import React, { useEffect, useState } from "react";
+import Lenis from "@studio-freight/lenis";
+import "../About.css";
 import motoislalogo from "../assets/motoislalogo.jpg";
 import PlaceIcon from "@mui/icons-material/Place";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
-import repair from "../assets/repair.jpg"
-import tools from "../assets/Tools.jpg"
+import repair from "../assets/repair.jpg";
+import tools from "../assets/Tools.jpg";
 
 const About = () => {
-  // Estados para controlar la visibilidad de los textos adicionales
   const [showMore1, setShowMore1] = useState(false);
   const [showMore2, setShowMore2] = useState(false);
-  
+
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+    });
+
+    const raf = (time) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const logo = document.querySelector(".about-image");
+      const slogan = document.querySelector(".qaranta-title");
+
+      if (logo) {
+        const opacity = Math.max(0, 1 - scrollY / 400);
+        logo.style.opacity = opacity;
+      }
+
+      if (slogan) {
+        const maxScroll = document.body.scrollHeight - window.innerHeight;
+        const progress = scrollY / maxScroll;
+
+        // Responsivo: escalado diferente para móvil y escritorio
+        const isMobile = window.innerWidth <= 768;
+        const baseScale = isMobile ? 1 : 1.2;
+        const maxScale = isMobile ? 1.4 : 2.5;
+        const scale = Math.min(
+          maxScale,
+          baseScale + progress * (maxScale - baseScale)
+        );
+
+        slogan.style.transform = `scale(${scale})`;
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      lenis.destroy();
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
     <div className="about-container">
-      {/* Sección principal con la imagen y los textos */}
-      <div className="main-section">
+      <div className="main-section fade-in">
         <div className="image-container">
           <img
             src={motoislalogo}
@@ -52,18 +98,15 @@ const About = () => {
         </div>
       </div>
 
-      {/* Sección de localización */}
-      <div className="section">
+      <div className="section fade-in">
         <h2>¿Dónde radicamos?</h2>
-
         <p className="location">
           <PlaceIcon />
           Nos encontramos en Calle 39A entre 47 y 49, Nueva Gerona.
         </p>
       </div>
 
-      {/* Sección de contacto */}
-      <div className="section">
+      <div className="section fade-in">
         <h2>¿Cómo contactarnos?</h2>
         <p className="location">
           <CallIcon />
@@ -81,56 +124,58 @@ const About = () => {
         </p>
       </div>
 
-      {/* Servicios que prestamos */}
-      <div>
+      <div className="fade-in">
         <h2>Servicios que prestamos</h2>
         <div className="services-container">
           {/* Servicio 1 */}
           <div className="service">
-            <img src={tools} alt="Servicio 1"></img>
+            <img src={tools} alt="Servicio 1" />
             <h2>Venta de respuestos y accesorios</h2>
             <p>
               Ofrecemos una amplia variedad de repuestos, piezas y accesorios
               para vehículos automotores.
             </p>
-            {showMore1 && (
-              <p>
-                Garantizando calidad, durabilidad y compatibilidad con las
-                principales marcas del mercado. Nuestro objetivo es brindar
-                soluciones confiables para el mantenimiento, personalización y
-                reparación de tu vehículo, asegurando siempre un servicios ágil
-                y profesional.
-              </p>
-            )}
-            <a onClick={() => setShowMore1(!showMore1)}>
+            <p className={showMore1 ? "show-more" : "hide"}>
+              Garantizando calidad, durabilidad y compatibilidad con las
+              principales marcas del mercado. Nuestro objetivo es brindar
+              soluciones confiables para el mantenimiento, personalización y
+              reparación de tu vehículo, asegurando siempre un servicios ágil y
+              profesional.
+            </p>
+            <a
+              onClick={() => setShowMore1(!showMore1)}
+              style={{ cursor: "pointer" }}
+            >
               {showMore1 ? "Leer menos" : "Leer más"}
             </a>
           </div>
 
           {/* Servicio 2 */}
           <div className="service">
-            <img src={repair} alt="Servicio 2"></img>
-            <h2>Reparación, reconstrucción y mantenimiento </h2>
+            <img src={repair} alt="Servicio 2" />
+            <h2>Reparación, reconstrucción y mantenimiento</h2>
             <p>
               Nos especializamos en ofrecer servicios integrales para garantizar
               el óptimo funcionamiento de su vehículo.
             </p>
-            {showMore2 && (
-              <p>
-                Desde reparaciones mecánicas y eléctricas hasta reconstrucción
-                de componentes y mantenimiento preventivo, adaptadas a las
-                necesidades de cada cliente.
-              </p>
-            )}
-            <a onClick={() => setShowMore2(!showMore2)}>
+            <p className={showMore2 ? "show-more" : "hide"}>
+              Desde reparaciones mecánicas y eléctricas hasta reconstrucción de
+              componentes y mantenimiento preventivo, adaptadas a las
+              necesidades de cada cliente.
+            </p>
+            <a
+              onClick={() => setShowMore2(!showMore2)}
+              style={{ cursor: "pointer" }}
+            >
               {showMore2 ? "Leer menos" : "Leer más"}
             </a>
           </div>
         </div>
       </div>
+      
+      
 
-      {/* Eslogan */}
-      <div className="slogan">
+      <div className="slogan fade-in">
         <h2 className="qaranta-title">"Su moto merece lo mejor"</h2>
       </div>
     </div>
