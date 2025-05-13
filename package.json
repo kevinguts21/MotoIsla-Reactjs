@@ -29,7 +29,8 @@
     "react-router-dom": "^7.0.2",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
-    "yup": "^1.6.1"
+    "yup": "^1.6.1",
+    "@studio-freight/lenis": "^1.0.42"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
