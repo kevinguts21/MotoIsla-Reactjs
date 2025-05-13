@@ -42,14 +42,22 @@ const Purchase = () => {
   const handleSubmit = async () => {
     try {
       // Validar los datos del cliente con Yup
-      await validationSchema.validate({ name, phone, address }, { abortEarly: false });
+      await validationSchema.validate(
+        { name, phone, address },
+        { abortEarly: false }
+      );
       setErrors({}); // Limpiar errores
 
       // Obtener los productos del carrito desde el sessionStorage
       const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-      const productos = cart.map(item => 
-        `• ${item.nombre || item.title}: ${item.quantity} x ${item.precio} = ${item.quantity * item.precio} CUP`
-      ).join("\n");
+      const productos = cart
+        .map(
+          (item) =>
+            `• ${item.nombre || item.title}: ${item.quantity} x ${
+              item.precio
+            } = ${item.quantity * item.precio} CUP`
+        )
+        .join("\n");
 
       // Crear el mensaje que se enviará a Telegram
       const message = `
@@ -85,11 +93,11 @@ ${productos}
       });
 
       // Mostrar el mensaje de éxito
-      toast.success("Pedido enviado al gestor de ventas vía Telegram");
+      toast.success("Pedido realizado");
 
       // Limpiar el carrito y redirigir al home
       sessionStorage.removeItem("cart");
-      setTimeout(() => window.location.href = "/", 3000);
+      setTimeout(() => (window.location.href = "/"), 3000);
     } catch (validationError) {
       const errorObj = {};
       validationError.inner.forEach((err) => {
@@ -198,33 +206,36 @@ ${productos}
       </Grid>
 
       {/* Mapa de la tienda siempre visible */}
-      <Paper
-        elevation={2}
-        sx={{ marginTop: 4, padding: 2, backgroundColor: "#f5f5f5" }}
-      >
-        <Typography variant="subtitle1" gutterBottom>
-          <LocationOnIcon color="error" /> Dónde deberá recoger el pedido
-        </Typography>
-        <Typography variant="h6" fontWeight="bold">
-          Calle 39A entre 47 y 49, Nueva Gerona.
-        </Typography>
-        <Box mt={2}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            Dirección aproximada en mapa:
+      {/* Mapa de la tienda solo cuando NO es delivery */}
+      {!isDelivery && (
+        <Paper
+          elevation={2}
+          sx={{ marginTop: 4, padding: 2, backgroundColor: "#f5f5f5" }}
+        >
+          <Typography variant="subtitle1" gutterBottom>
+            <LocationOnIcon color="error" /> Dónde deberá recoger el pedido
           </Typography>
-          <Box sx={{ borderRadius: 2, overflow: "hidden", height: 250 }}>
-            <iframe
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              src="https://www.openstreetmap.org/export/embed.html?bbox=-82.811%2C21.891%2C-82.808%2C21.894&layer=mapnik&marker=21.8923739%2C-82.8098227"
-              title="Ubicación tienda física"
-            />
+          <Typography variant="h6" fontWeight="bold">
+            Calle 39A entre 47 y 49, Nueva Gerona.
+          </Typography>
+          <Box mt={2}>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              Dirección aproximada en mapa:
+            </Typography>
+            <Box sx={{ borderRadius: 2, overflow: "hidden", height: 250 }}>
+              <iframe
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                src="https://www.openstreetmap.org/export/embed.html?bbox=-82.811%2C21.891%2C-82.808%2C21.894&layer=mapnik&marker=21.8923739%2C-82.8098227"
+                title="Ubicación tienda física"
+              />
+            </Box>
           </Box>
-        </Box>
-      </Paper>
+        </Paper>
+      )}
 
       <Divider sx={{ marginY: 4 }} />
 
@@ -241,7 +252,7 @@ ${productos}
         <Button
           variant="contained"
           color="error"
-          onClick={handleSubmit}  // Aquí se llama a handleSubmit al hacer clic
+          onClick={handleSubmit} // Aquí se llama a handleSubmit al hacer clic
           sx={{
             borderRadius: "111px",
             padding: "10px 20px",

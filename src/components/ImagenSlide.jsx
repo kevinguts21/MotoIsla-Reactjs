@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
 import desktop from "../assets/Portada/Dekstop.png";
 import motorcycle from "../assets/Portada/moto.jpg";
 import portada from "../assets/Portada/PortadaDesk.png";
@@ -47,6 +48,7 @@ const CustomNextArrow = ({ onClick }) => (
 
 const ImagenSlide = () => {
   const isMobile = useMediaQuery("(max-width:960px)");
+  const navigate = useNavigate(); // <-- Añadido useNavigate
   const [isOpen, setIsOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [timeUntilOpen, setTimeUntilOpen] = useState("");
@@ -117,7 +119,11 @@ const ImagenSlide = () => {
 
   const mobileImages = [
     { src: motorcycle, alt: "Mobile Image 2" },
-    { src: Remoto, alt: "Mobile Image 4" },
+    { 
+      src: Remoto, 
+      alt: "Mobile Image 4", 
+      onClick: () => navigate({ pathname: "/", search: "?subcategoria=14" }) // <-- Aquí actualizamos la query string
+    },
   ];
 
   const imageList = isMobile ? mobileImages : desktopImages;
@@ -200,7 +206,11 @@ const ImagenSlide = () => {
 
       <Slider {...settings}>
         {imageList.map((image, index) => (
-          <Box key={index}>
+          <Box
+            key={index}
+            onClick={image.onClick ? image.onClick : undefined}
+            sx={{ cursor: image.onClick ? "pointer" : "default" }}
+          >
             <img
               src={image.src}
               alt={image.alt}

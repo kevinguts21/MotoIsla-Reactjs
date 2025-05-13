@@ -34,25 +34,24 @@ const ScrollToTopButton = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  // Animación simple de opacidad para aparecer (fade-in)
+  const fadeIn = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    transition: { duration: 0.3 },
+  };
+
   return (
     <>
       {showCartIcon && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.div {...fadeIn}>
           <Box
-            component={motion.div}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
             sx={{
               position: "fixed",
               bottom: { xs: "110px", sm: "130px" },
               right: { xs: "25px", sm: "35px" },
               zIndex: 11,
-              backgroundColor: "#f5f5f5", // Un gris claro para diferenciarse del fondo blanco
+              backgroundColor: "#f5f5f5",
               padding: "6px",
               borderRadius: "50%",
               cursor: "pointer",
@@ -67,16 +66,8 @@ const ScrollToTopButton = () => {
         </motion.div>
       )}
       {showButton && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
+        <motion.div {...fadeIn}>
           <Box
-            component={motion.div}
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
             sx={{
               position: "fixed",
               bottom: { xs: "50px", sm: "70px" },
