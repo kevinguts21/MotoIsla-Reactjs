@@ -122,7 +122,7 @@ const ImagenSlide = () => {
     { 
       src: Remoto, 
       alt: "Mobile Image 4", 
-      onClick: () => navigate({ pathname: "/", search: "?subcategoria=14" }) // <-- Aquí actualizamos la query string
+      onClick: () => navigate({ pathname: "/", search: "?subcategoria=6" }) // <-- Aquí actualizamos la query string
     },
   ];
 
