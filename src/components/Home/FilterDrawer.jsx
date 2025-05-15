@@ -12,14 +12,14 @@ import AxiosInstance from "../Axios";
 import PriceRange from "./PriceRange";
 import { useNavigate } from "react-router-dom";
 
-const FilterDrawer = ({ onClose }) => {
+const FilterDrawer = ({ onClose, disponible, setDisponible }) => {
   const [categorias, setCategorias] = useState([]);
   const [selectedCategorias, setSelectedCategorias] = useState({});
   const [subcategorias, setSubcategorias] = useState([]);
   const [todosProductos, setTodosProductos] = useState([]);
   const [precioSeleccionado, setPrecioSeleccionado] = useState([0, 1000]);
   const [showAlert, setShowAlert] = useState(false);
-  const [showNoProductsAlert, setShowNoProductsAlert] = useState(false); // New state for no products alert
+  const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
 
   const navigate = useNavigate();
 
@@ -121,24 +121,20 @@ const FilterDrawer = ({ onClose }) => {
         producto.precio <= precioSeleccionado[1]
     );
 
-    console.log("Productos filtrados:", productosConPrecio);
+    let productosFinales = productosConPrecio;
 
-    if (productosConPrecio.length > 0) {
-      navigate("/", { state: { productosFiltrados: productosConPrecio } });
+    if (disponible) {
+      productosFinales = productosFinales.filter(
+        (producto) => producto.cantidad_disponible > 0
+      );
+    }
 
-
-      // Close the drawer only if there are matching products
+    if (productosFinales.length > 0) {
+      navigate("/", { state: { productosFiltrados: productosFinales } });
       onClose();
-
-      // Reset no products alert
       setShowNoProductsAlert(false);
     } else {
-      console.error("No hay productos que coincidan con los filtros.");
-
-      // Show alert for no matching products
       setShowNoProductsAlert(true);
-
-      // Do not close the drawer if no products match
     }
   };
 
@@ -147,9 +143,8 @@ const FilterDrawer = ({ onClose }) => {
     setSubcategorias([]);
     setPrecioSeleccionado([0, 1000]);
     setShowAlert(false);
-
-    // Reset no products alert
     setShowNoProductsAlert(false);
+    setDisponible(false);
   };
 
   return (
@@ -177,11 +172,7 @@ const FilterDrawer = ({ onClose }) => {
       )}
 
       <IconButton
-        sx={{
-          position: "absolute",
-          top: 10,
-          right: 10,
-        }}
+        sx={{ position: "absolute", top: 10, right: 10 }}
         onClick={onClose}
       >
         <CloseIcon />
@@ -211,10 +202,6 @@ const FilterDrawer = ({ onClose }) => {
               padding: "5px 15px",
               fontSize: "0.8rem",
               fontWeight: "bold",
-              "&:focus": {
-                outline: "none",
-                boxShadow: "none",
-              },
             }}
           >
             Todas
@@ -233,10 +220,6 @@ const FilterDrawer = ({ onClose }) => {
                 padding: "5px 15px",
                 fontSize: "0.8rem",
                 fontWeight: "bold",
-                "&:focus": {
-                  outline: "none",
-                  boxShadow: "none",
-                },
               }}
             >
               {categoria.nombre}
@@ -248,35 +231,74 @@ const FilterDrawer = ({ onClose }) => {
 
         <PriceRange onRangeChange={setPrecioSeleccionado} />
 
+        <Divider />
+
+        <Typography variant="subtitle1">Disponibilidad</Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center", // Centra horizontalmente
+            gap: 1,
+            mt: 1,
+          }}
+        >
+          <Button
+            variant={disponible ? "contained" : "outlined"}
+            color="error"
+            onClick={() => setDisponible(true)}
+            sx={{
+              borderRadius: "20px",
+              textTransform: "none",
+              padding: "5px 15px",
+              fontSize: "0.75rem",
+              fontWeight: "bold",
+              boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
+              transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+              "&:hover": {
+                backgroundColor: disponible ? "#c62828" : "#ffe5e5",
+                boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+              },
+            }}
+          >
+            Productos disponibles
+          </Button>
+
+          <Button
+            variant={!disponible ? "contained" : "outlined"}
+            color="error"
+            onClick={() => setDisponible(false)}
+            sx={{
+              borderRadius: "20px",
+              textTransform: "none",
+              padding: "5px 15px",
+              fontSize: "0.75rem",
+              fontWeight: "bold",
+              boxShadow: "0px 2px 6px rgba(0,0,0,0.1)",
+              transition: "background-color 0.2s ease, box-shadow 0.2s ease",
+              "&:hover": {
+                backgroundColor: !disponible ? "#c62828" : "#ffe5e5",
+                boxShadow: "0px 4px 10px rgba(0,0,0,0.2)",
+              },
+            }}
+          >
+            Todos los productos
+          </Button>
+        </Box>
+
         <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
           <Button
             variant="contained"
             color="error"
             onClick={handleResetFilters}
-            sx={{
-              width: "49%",
-              height: "10%",
-              "&:focus": {
-                outline: "none",
-                boxShadow: "none",
-              },
-            }}
+            sx={{ width: "49%" }}
           >
             Restablecer
           </Button>
-
           <Button
             variant="contained"
             color="primary"
-            onClick={handleApplyFilters} // Apply filters and close drawer conditionally
-            sx={{
-              width: "49%",
-              height: "10%",
-              "&:focus": {
-                outline: "none",
-                boxShadow: "none",
-              },
-            }}
+            onClick={handleApplyFilters}
+            sx={{ width: "49%" }}
           >
             Aplicar
           </Button>

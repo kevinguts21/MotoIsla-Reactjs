@@ -36,7 +36,7 @@ const ProductDetail = () => {
   };
 
   const convertPrice = (priceInCUP) => {
-    const exchangeRate = 340; // 1 USD = 340 CUP
+    const exchangeRate = 370; // 1 USD = 340 CUP
     return currency === "USD"
       ? (priceInCUP / exchangeRate).toFixed(2)
       : priceInCUP.toLocaleString("en-US", {

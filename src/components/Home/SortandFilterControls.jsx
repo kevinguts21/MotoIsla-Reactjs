@@ -6,11 +6,11 @@ import {
   IconButton,
   Typography,
   Drawer,
+  useMediaQuery,
 } from "@mui/material";
 import ViewCompactAltOutlinedIcon from "@mui/icons-material/ViewCompactAltOutlined";
 import ViewCompactOutlinedIcon from "@mui/icons-material/ViewCompactOutlined";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { useMediaQuery } from "@mui/material";
 import FilterDrawer from "./FilterDrawer";
 
 const SortAndFilterControls = ({
@@ -45,7 +45,7 @@ const SortAndFilterControls = ({
 
   const handleApplyFilters = (filters) => {
     onApplyFilters(filters);
-    handleCloseDrawer(); // Cierra el drawer después de aplicar filtros
+    handleCloseDrawer();
   };
 
   return (
@@ -99,7 +99,7 @@ const SortAndFilterControls = ({
       {/* Column View Controls o Filtro en Móvil */}
       {isMobile ? (
         <IconButton
-          onClick={handleOpenDrawer} // Abre el drawer
+          onClick={handleOpenDrawer}
           disableRipple
           sx={{
             backgroundColor: "inherit",
@@ -176,6 +176,8 @@ const SortAndFilterControls = ({
           onClose={handleCloseDrawer}
           onResetFilters={handleResetFilters}
           onApplyFilters={handleApplyFilters}
+          disponible={disponible}
+          setDisponible={setDisponible}
         />
       </Drawer>
     </Box>

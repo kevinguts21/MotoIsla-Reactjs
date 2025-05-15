@@ -26,6 +26,7 @@ const Purchase = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [ci, setci] = useState("");
   const [errors, setErrors] = useState({});
 
   const validationSchema = Yup.object().shape({
@@ -33,6 +34,11 @@ const Purchase = () => {
     phone: Yup.string()
       .matches(/^[0-9]{8,15}$/, "Introduce un teléfono válido")
       .required("El teléfono es obligatorio"),
+    ci: Yup.string()
+      .required("El carnet es obligatorio")
+      .length(11, "El carnet debe tener exactamente 11 dígitos")
+      .matches(/^\d+$/, "La cédula solo debe contener números"),
+
     address: isDelivery
       ? Yup.string().required("La dirección es obligatoria")
       : Yup.string(),
@@ -43,7 +49,7 @@ const Purchase = () => {
     try {
       // Validar los datos del cliente con Yup
       await validationSchema.validate(
-        { name, phone, address },
+        { name, phone, address, ci },
         { abortEarly: false }
       );
       setErrors({}); // Limpiar errores
@@ -61,9 +67,11 @@ const Purchase = () => {
 
       // Crear el mensaje que se enviará a Telegram
       const message = `
+  *Moto Isla tienda virtual*
 📦 *Nuevo pedido recibido*
 
-👤 Cliente: ${name}
+👤 Cliente: ${name} 
+🆔 Carnet:     ${ci}
 📞 Teléfono: ${phone}
 🏠 Dirección: ${isDelivery ? address : "Recoge en tienda"}
 🚚 Tipo entrega: ${isDelivery ? "Entrega a domicilio" : "Recoger en tienda"}
@@ -179,6 +187,18 @@ ${productos}
             helperText={errors.name}
           />
         </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="Carnet de Identidad"
+            required
+            value={ci}
+            onChange={(e) => setci(e.target.value)}
+            error={Boolean(errors.ci)}
+            helperText={errors.ci}
+          />
+        </Grid>
+
         <Grid item xs={12} sm={6}>
           <TextField
             fullWidth
