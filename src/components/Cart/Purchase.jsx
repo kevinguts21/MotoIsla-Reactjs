@@ -28,6 +28,7 @@ const Purchase = () => {
   const [address, setAddress] = useState("");
   const [ci, setci] = useState("");
   const [errors, setErrors] = useState({});
+  const [observaciones, setObservaciones] = useState("");
 
   const validationSchema = Yup.object().shape({
     name: Yup.string().required("El nombre es obligatorio"),
@@ -75,6 +76,8 @@ const Purchase = () => {
 📞 Teléfono: ${phone}
 🏠 Dirección: ${isDelivery ? address : "Recoge en tienda"}
 🚚 Tipo entrega: ${isDelivery ? "Entrega a domicilio" : "Recoger en tienda"}
+
+${observaciones ? `📝 Observaciones: ${observaciones}\n` : ""}
 
 🛒 *Productos:*
 ${productos}
@@ -223,6 +226,18 @@ ${productos}
             />
           </Grid>
         )}
+        <Grid item xs={12}>
+          <TextField
+            fullWidth
+            label="Observaciones"
+            value={observaciones}
+            onChange={(e) => setObservaciones(e.target.value)}
+            multiline
+            minRows={2}
+            maxRows={4}
+            placeholder="¿Desea agregar algún comentario adicional?"
+          />
+        </Grid>
       </Grid>
 
       {/* Mapa de la tienda siempre visible */}
