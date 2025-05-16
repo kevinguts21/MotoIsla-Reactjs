@@ -3,12 +3,18 @@ import Slider from "react-slick";
 import { Box, IconButton, useMediaQuery } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import { useNavigate } from "react-router-dom"; // <-- Import useNavigate
+import { useNavigate } from "react-router-dom";
 import desktop from "../assets/Portada/Dekstop.png";
 import motorcycle from "../assets/Portada/moto.jpg";
 import portada from "../assets/Portada/PortadaDesk.png";
 import remotorizacion from "../assets/Portada/Remotorizacion.png";
 import Remoto from "../assets/Portada/Remoto.png";
+import Buy from "../assets/Portada/Buy.png";
+import bici from "../assets/Portada/bici.jpg";
+import biciniño from "../assets/Biciniñoroja.png";
+import montana from "../assets/montañabici.jpg";
+import paseo from "../assets/grisbici.jpg";
+import { Divider } from "@mui/material";
 
 const CustomPrevArrow = ({ onClick }) => (
   <IconButton
@@ -48,68 +54,8 @@ const CustomNextArrow = ({ onClick }) => (
 
 const ImagenSlide = () => {
   const isMobile = useMediaQuery("(max-width:960px)");
-  const navigate = useNavigate(); // <-- Añadido useNavigate
-  const [isOpen, setIsOpen] = useState(false);
-  const [showInfo, setShowInfo] = useState(false);
-  const [timeUntilOpen, setTimeUntilOpen] = useState("");
-
-  const openingHour = 8;
-  const closingHour = 16;
-
-  useEffect(() => {
-    const now = new Date();
-    const currentDay = now.getDay();
-    const currentHour = now.getHours();
-    setIsOpen(
-      currentDay !== 0 &&
-        currentHour >= openingHour &&
-        currentHour < closingHour
-    );
-  }, []);
-
-  const getNextOpeningTime = () => {
-    const now = new Date();
-    const nextOpening = new Date(now);
-    if (now.getDay() === 0 || now.getHours() >= closingHour) {
-      nextOpening.setDate(now.getDate() + 1);
-      nextOpening.setHours(openingHour, 0, 0, 0);
-    } else if (now.getHours() < openingHour) {
-      nextOpening.setHours(openingHour, 0, 0, 0);
-    }
-    return nextOpening;
-  };
-
-  useEffect(() => {
-    if (!isOpen) {
-      const interval = setInterval(() => {
-        const now = new Date();
-        const diff = getNextOpeningTime() - now;
-        const h = String(Math.floor(diff / 1000 / 60 / 60)).padStart(2, "0");
-        const m = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, "0");
-        const s = String(Math.floor((diff / 1000) % 60)).padStart(2, "0");
-        setTimeUntilOpen(`${h}:${m}:${s}`);
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [isOpen]);
-
-  const handleMouseEnter = () => {
-    if (!isMobile) setShowInfo(true);
-  };
-
-  const handleMouseLeave = () => {
-    if (!isMobile) setShowInfo(false);
-  };
-
-  const handleClick = () => {
-    if (isMobile) setShowInfo((prev) => !prev);
-  };
-
-  const formatTime12 = (hour) => {
-    const h = hour % 12 || 12;
-    const ampm = hour < 12 ? "am" : "pm";
-    return `${h}:00 ${ampm}`;
-  };
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   const desktopImages = [
     { src: desktop, alt: "Desktop Image 1" },
@@ -118,11 +64,20 @@ const ImagenSlide = () => {
   ];
 
   const mobileImages = [
-    { src: motorcycle, alt: "Mobile Image 2" },
-    { 
-      src: Remoto, 
-      alt: "Mobile Image 4", 
-      onClick: () => navigate({ pathname: "/", search: "?subcategoria=6" }) // <-- Aquí actualizamos la query string
+    {
+      src: bici,
+      alt: "Bicis",
+      onClick: () => setShowModal(true),
+    },
+    {
+      src: Remoto,
+      alt: "Remoto",
+      onClick: () => navigate({ pathname: "/", search: "?subcategoria=6" }),
+    },
+    {
+      src: Buy,
+      alt: "Buy",
+      onClick: () => navigate({ pathname: "/", search: "?subcategoria=24" }),
     },
   ];
 
@@ -159,50 +114,98 @@ const ImagenSlide = () => {
         width: "100%",
         maxWidth: "1920px",
         margin: "0 auto",
+        overflow: "hidden",
       }}
     >
-      {/*  <Box
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
-        sx={{
-          position: "absolute",
-          top: "5px",
-          right: "5px",
-          backgroundColor: "rgba(241, 241, 241, 0.66)",
-          padding: "5px 10px",
-          borderRadius: "7px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-          zIndex: 3,
-          transition: "all 0.3s ease",
-          cursor: isMobile ? "pointer" : "default",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center" }}>
+      {showModal && (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            backdropFilter: "blur(6px)",
+            zIndex: 2,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            px: 0,
+            overflow: "hidden",
+          }}
+          onClick={() => setShowModal(false)}
+        >
           <Box
             sx={{
-              width: "13px",
-              height: "13px",
-              borderRadius: "50%",
-              backgroundColor: isOpen ? "green" : "red",
-              marginRight: "10px",
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+              flexWrap: "nowrap",
+              maxWidth: "600px",
+              width: "100%",
             }}
-          />
-          <b>{isOpen ? "Abierto" : "Cerrado"}</b>
-        </Box>
-        {showInfo && (
-          <Box sx={{ marginTop: "5px", fontSize: "0.85rem" }}>
-            {isOpen ? (
-              <span>{`Horario: ${formatTime12(openingHour)} - ${formatTime12(closingHour)}`}</span>
-            ) : (
-              <span>{`Abrimos en ${timeUntilOpen}`}</span>
-            )}
+          >
+            {[
+              { label: "Bici de paseo", subcategoria: 18, img: paseo },
+              { label: "Bici de montaña", subcategoria: 19, img: montana },
+              { label: "Bicis para niños", subcategoria: 23, img: biciniño },
+            ].map((item, idx) => (
+              <Box
+                key={idx}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate({
+                    pathname: "/",
+                    search: `?subcategoria=${item.subcategoria}`,
+                  });
+                }}
+                sx={{
+                  width: 140,
+                  height: 190,
+                  borderRadius: 3,
+                  backgroundColor: "#fff",
+                  border: "2px solid #d32f2f",
+                  boxShadow: "0 8px 20px rgba(0,0,0,0.2)",
+                  cursor: "pointer",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  transition: "transform 0.25s ease, box-shadow 0.25s ease",
+                  "&:hover": {
+                    transform: "translateY(-5px)",
+                    boxShadow: "0 12px 24px rgba(0,0,0,0.3)",
+                  },
+                }}
+              >
+                <Box sx={{ height: "50%", overflow: "hidden" }}>
+                  <img
+                    src={item.img}
+                    alt={item.label}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                </Box>
+                <Divider />
+                <Box
+                  sx={{
+                    fontFamily: "Qaranta, sans-serif",
+                    textAlign: "center",
+                    fontSize: "0.9rem",
+                    padding: "8px 5px",
+                  }}
+                >
+                  {item.label}
+                </Box>
+              </Box>
+            ))}
           </Box>
-        )}
-      </Box>*/}
+        </Box>
+      )}
 
       <Slider {...settings}>
         {imageList.map((image, index) => (

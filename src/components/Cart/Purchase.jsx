@@ -236,6 +236,7 @@ ${productos}
             minRows={2}
             maxRows={4}
             placeholder="¿Desea agregar algún comentario adicional?"
+            InputLabelProps={{ shrink: true }}
           />
         </Grid>
       </Grid>
