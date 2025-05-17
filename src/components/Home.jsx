@@ -26,7 +26,7 @@ const Home = ({ filteredProducts, loading }) => {
   const [loadingCurrency, setLoadingCurrency] = useState(false);
   const [showBlurLoading, setShowBlurLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState(filteredProducts);
   const isMobile = useMediaQuery("(max-width: 600px)");
@@ -135,7 +135,10 @@ const Home = ({ filteredProducts, loading }) => {
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
 
-  const debouncedSort = debounce((option) => setSortOption(option), 300);
+  const debouncedSort = debounce((option) => {
+    setSortOption(option);
+    setCurrentPage(1); 
+  }, 300);
 
   const resetFilters = () => {
     setDisplayedProducts(filteredProducts);
