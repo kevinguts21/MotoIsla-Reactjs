@@ -10,14 +10,13 @@ import {
 import CleaningServicesOutlinedIcon from "@mui/icons-material/CleaningServicesOutlined";
 import { useMediaQuery } from "@mui/material";
 import { debounce } from "lodash";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProductCard from "./Home/ProductCard";
 import PaginationControls from "./Home/PaginationControls";
 import LoadingOverlay from "./Home/LoadingOverlay";
 import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
 import noResultsImage from "../assets/not.png";
-
 
 const Home = ({ filteredProducts, loading }) => {
   const [columns, setColumns] = useState(4);
@@ -34,7 +33,6 @@ const Home = ({ filteredProducts, loading }) => {
   const productsPerPage = isMobile ? 10 : 9; // Ajuste para móvil o escritorio
   const location = useLocation();
   const navigate = useNavigate();
-
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
