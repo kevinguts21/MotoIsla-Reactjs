@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
-import { Box, IconButton, useMediaQuery } from "@mui/material";
+import { Box, IconButton, useMediaQuery, Divider } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,6 @@ import bici from "../assets/Portada/bici.jpg";
 import biciniño from "../assets/Biciniñoroja.png";
 import montana from "../assets/montañabici.jpg";
 import paseo from "../assets/grisbici.jpg";
-import { Divider } from "@mui/material";
 
 const CustomPrevArrow = ({ onClick }) => (
   <IconButton
@@ -145,8 +144,9 @@ const ImagenSlide = () => {
               maxWidth: "600px",
               width: "100%",
             }}
+            onClick={(e) => e.stopPropagation()}
           >
-            {[
+            {[ 
               { label: "Bici de paseo", subcategoria: 18, img: paseo },
               { label: "Bici de montaña", subcategoria: 19, img: montana },
               { label: "Bicis para niños", subcategoria: 23, img: biciniño },
@@ -159,6 +159,7 @@ const ImagenSlide = () => {
                     pathname: "/",
                     search: `?subcategoria=${item.subcategoria}`,
                   });
+                  setShowModal(false); // ⬅️ Ocultar el modal al hacer clic en una opción
                 }}
                 sx={{
                   width: 140,

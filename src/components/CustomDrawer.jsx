@@ -16,8 +16,10 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
+import PublicIcon from "@mui/icons-material/Public"; // Icono para Mundo Mix
 import proof from "../assets/proof.jpg";
 import { useNavigate } from "react-router-dom";
+import mundoIcon from "../assets/Mundo.png";
 
 const CustomDrawer = ({
   open,
@@ -34,14 +36,14 @@ const CustomDrawer = ({
 
   const handleCategoryClick = (categoryId) => {
     setExpandedCategory(expandedCategory === categoryId ? null : categoryId);
-    onCategoryChange(categoryId); // Fetch subcategories for the selected category
+    onCategoryChange(categoryId);
   };
 
   const handleSubCategoryChange = (subCategoryId) => {
     if (subCategoryId) {
-      onSubCategoryChange(subCategoryId); // ✅ Llamar a la función como en el viejo CustomDrawer
-      navigate(`/?subcategoria=${subCategoryId}`); // ✅ También actualizar la URL
-      onClose(); // ✅ Cerrar el drawer
+      onSubCategoryChange(subCategoryId);
+      navigate(`/?subcategoria=${subCategoryId}`);
+      onClose();
     }
   };
 
@@ -62,7 +64,7 @@ const CustomDrawer = ({
         {/* Header */}
         <Box
           sx={{
-            backgroundColor: "#ffffffcc", // Semi-transparent white
+            backgroundColor: "#ffffffcc",
             padding: "8px",
             borderRadius: "8px",
             boxShadow: "0px 2px 6px rgba(0,0,0,0.2)",
@@ -109,25 +111,40 @@ const CustomDrawer = ({
           {categories.map((category) => (
             <div key={category.id}>
               <ListItem button onClick={() => handleCategoryClick(category.id)}>
-                <ListItemText primary={<b>{category.nombre}</b>} />
+                {category.nombre === "Mundo Mix" ? (
+                  <>
+                    <Box
+                      component="img"
+                      src={mundoIcon}
+                      alt="Mundo Mix Icon"
+                      sx={{ width: 24, height: 24, mr: 1 }}
+                    />
+                    <ListItemText
+                      primary={
+                        <b style={{ color: "green" }}>{category.nombre}</b>
+                      }
+                    />
+                  </>
+                ) : (
+                  <ListItemText primary={<b>{category.nombre}</b>} />
+                )}
+
                 {expandedCategory === category.id ? (
                   <ExpandLessIcon />
                 ) : (
                   <ExpandMoreIcon />
                 )}
               </ListItem>
-              {/* Subcategories */}
               <Collapse
                 in={expandedCategory === category.id}
                 timeout="auto"
                 unmountOnExit
               >
-                {/* Apply styles for the blurred white background */}
                 <Box
                   sx={{
-                    backgroundColor: "#ffffffcc", // Semi-transparent white background for subcategories
-                    backdropFilter: "blur(5px)", // Blur effect
-                    borderRadius: "4px", // Rounded corners
+                    backgroundColor: "#ffffffcc",
+                    backdropFilter: "blur(5px)",
+                    borderRadius: "4px",
                     paddingLeft: "16px",
                   }}
                 >

@@ -5,41 +5,37 @@ import {
   Grid,
   Typography,
   Button,
-  Divider,
 } from "@mui/material";
 import CleaningServicesOutlinedIcon from "@mui/icons-material/CleaningServicesOutlined";
 import { useMediaQuery } from "@mui/material";
 import { debounce } from "lodash";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // ← IMPORTANTE
 import ProductCard from "./Home/ProductCard";
 import PaginationControls from "./Home/PaginationControls";
-import LoadingOverlay from "./Home/LoadingOverlay";
 import SortAndFilterControls from "./Home/SortandFilterControls";
 import ScrollToTopButton from "./Home/ScrolltoTop";
 import noResultsImage from "../assets/not.png";
 
-
 const Home = ({ filteredProducts, loading }) => {
   const [columns, setColumns] = useState(4);
-  const [currency, setCurrency] = useState(
-    () => localStorage.getItem("currency") || "USD"
-  );
+  const [currency, setCurrency] = useState(() => localStorage.getItem("currency") || "USD");
   const [loadingCurrency, setLoadingCurrency] = useState(false);
   const [showBlurLoading, setShowBlurLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [sortOption, setSortOption] = useState("");
+  const [sortOption, setSortOption] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState(filteredProducts);
   const isMobile = useMediaQuery("(max-width: 600px)");
-  const productsPerPage = isMobile ? 10 : 9; // Ajuste para móvil o escritorio
+  const productsPerPage = isMobile ? 10 : 9;
   const location = useLocation();
+  const navigate = useNavigate(); // ← IMPORTANTE
 
   const [showScrollToTop, setShowScrollToTop] = useState(false);
 
   useEffect(() => {
     if (location.state?.productosFiltrados) {
       setDisplayedProducts(location.state.productosFiltrados);
-      setCurrentPage(1); // Reinicia la paginación si se reciben nuevos productos
+      setCurrentPage(1);
     }
   }, [location.state]);
 
@@ -50,14 +46,8 @@ const Home = ({ filteredProducts, loading }) => {
     };
 
     window.addEventListener("scroll", handleScroll);
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -131,7 +121,6 @@ const Home = ({ filteredProducts, loading }) => {
   const handleLastPage = () => setCurrentPage(totalPages);
   const handleNextPage = () =>
     setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-
   const handlePreviousPage = () =>
     setCurrentPage((prev) => Math.max(prev - 1, 1));
 
@@ -139,7 +128,8 @@ const Home = ({ filteredProducts, loading }) => {
 
   const resetFilters = () => {
     setDisplayedProducts(filteredProducts);
-    setCurrentPage(1); // Reinicia la paginación
+    setCurrentPage(1);
+    navigate("/"); // ← REDIRECCIÓN A INICIO
   };
 
   return (
@@ -164,7 +154,7 @@ const Home = ({ filteredProducts, loading }) => {
         </Box>
       )}
 
-      <Box sx={{ marginBottom: 2.5,marginRight:"25px" }}>
+      <Box sx={{ marginBottom: 2.5, marginRight: "25px" }}>
         <SortAndFilterControls
           currency={currency}
           handleCurrencyChange={handleCurrencyChange}
@@ -175,22 +165,16 @@ const Home = ({ filteredProducts, loading }) => {
           paginatedProducts={paginatedProducts}
           displayedProducts={displayedProducts}
         />
-        
+
         {displayedProducts.length !== filteredProducts.length && (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: 1,
-            }}
-          >
+          <Box sx={{ display: "flex", justifyContent: "center", marginTop: 1 }}>
             <Button
               variant="outlined"
               color="error"
               onClick={resetFilters}
               startIcon={<CleaningServicesOutlinedIcon />}
               sx={{
-                marginLeft:"10%",
+                marginLeft: "10%",
                 textTransform: "none",
                 fontSize: "0.9rem",
                 borderRadius: "20px",

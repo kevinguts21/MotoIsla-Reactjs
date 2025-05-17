@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Select,
@@ -27,6 +27,11 @@ const SortAndFilterControls = ({
   const [precioSeleccionado, setPrecioSeleccionado] = useState([0, 0]);
   const [disponible, setDisponible] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [selectedSort, setSelectedSort] = useState("newest");
+
+  useEffect(() => {
+    debouncedSort("newest");
+  }, [debouncedSort]);
 
   const handleOpenDrawer = () => {
     setOpenDrawer(true);
@@ -70,8 +75,11 @@ const SortAndFilterControls = ({
       {/* Sort Options */}
       <Select
         variant="outlined"
-        value={sortOption}
-        onChange={(e) => debouncedSort(e.target.value)}
+        value={selectedSort}
+        onChange={(e) => {
+          setSelectedSort(e.target.value);
+          debouncedSort(e.target.value);
+        }}
         size="small"
         displayEmpty
         sx={{
