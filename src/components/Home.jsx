@@ -137,7 +137,6 @@ const Home = ({ filteredProducts, loading }) => {
 
   const debouncedSort = debounce((option) => {
     setSortOption(option);
-    setCurrentPage(1); 
   }, 300);
 
   const resetFilters = () => {
