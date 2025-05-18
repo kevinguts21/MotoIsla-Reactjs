@@ -81,6 +81,8 @@ const Home = ({ filteredProducts, loading }) => {
       }
 
       setDisplayedProducts(filtered);
+      setCurrentPage(1);
+      window.scrollTo({ top: 0, behavior: "smooth" }); // <-- AÑADIDO
       setIsLoading(false);
     }, 1000);
   }, [location.search, filteredProducts]);

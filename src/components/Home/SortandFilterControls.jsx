@@ -29,9 +29,7 @@ const SortAndFilterControls = ({
   const [filteredProducts, setFilteredProducts] = useState([]);
   
 
-  useEffect(() => {
-    debouncedSort("newest");
-  }, [debouncedSort]);
+
 
   const handleOpenDrawer = () => {
     setOpenDrawer(true);
