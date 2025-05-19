@@ -67,6 +67,7 @@ const Purchase = () => {
 
       let subtotal = 0;
       let descuentoTotal = 0;
+      let hayDescuento = false; // <- esta es la bandera
 
       const productos = cart
         .map((item) => {
@@ -81,6 +82,7 @@ const Purchase = () => {
           if (productosConDescuento.includes(nombre)) {
             const descuentoItem = totalItem * 0.1;
             descuentoTotal += descuentoItem;
+            hayDescuento = true; // se activa si al menos uno califica
             linea += ` (-10% Oferta día de los padres)`;
           }
 
@@ -89,6 +91,11 @@ const Purchase = () => {
         .join("\n");
 
       const totalFinal = subtotal - descuentoTotal;
+
+      // Solo incluir esta línea si hayDescuento es true
+      const lineasDescuento = hayDescuento
+        ? `🔻 -10% de descuento (Oferta día de los padres)\n`
+        : "";
 
       const message = `
 *Moto Isla tienda virtual*
@@ -106,9 +113,8 @@ ${observaciones ? `📝 Observaciones: ${observaciones}\n` : ""}
 ${productos}
 
 💰 Subtotal: ${subtotal.toLocaleString()} CUP
-🔻 -10% de descuento (Oferta día de los padres)
-💵 Total: ${totalFinal.toLocaleString()} CUP
-      `;
+${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
+    `;
 
       const botToken = "8106813744:AAHzcucB8vtwUQcyIBG-tWzzz8RofUFWv40";
       const chatId = "914493813";
