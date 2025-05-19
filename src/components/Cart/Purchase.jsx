@@ -48,27 +48,50 @@ const Purchase = () => {
   // Aquí se maneja el envío del formulario
   const handleSubmit = async () => {
     try {
-      // Validar los datos del cliente con Yup
       await validationSchema.validate(
         { name, phone, address, ci },
         { abortEarly: false }
       );
-      setErrors({}); // Limpiar errores
+      setErrors({});
 
-      // Obtener los productos del carrito desde el sessionStorage
       const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
+      const productosConDescuento = [
+        "Bicicleta de Paseo",
+        "Bicicleta de Paseo para hombre Amarilla",
+        "Bicicleta de Paseo para hombre Verde",
+        "Bicicleta de Paseo para mujer Amarilla",
+        "Bicicleta de Paseo para mujer Gris",
+        "Bicicleta de Paseo para mujer Naranja",
+      ];
+
+      let subtotal = 0;
+      let descuentoTotal = 0;
+
       const productos = cart
-        .map(
-          (item) =>
-            `• ${item.nombre || item.title}: ${item.quantity} x ${
-              item.precio
-            } = ${item.quantity * item.precio} CUP`
-        )
+        .map((item) => {
+          const nombre = item.nombre || item.title;
+          const cantidad = item.quantity;
+          const precio = item.precio;
+          const totalItem = cantidad * precio;
+          subtotal += totalItem;
+
+          let linea = `• ${nombre}: ${cantidad} x ${precio} = ${totalItem} CUP`;
+
+          if (productosConDescuento.includes(nombre)) {
+            const descuentoItem = totalItem * 0.1;
+            descuentoTotal += descuentoItem;
+            linea += ` (-10% Oferta día de los padres)`;
+          }
+
+          return linea;
+        })
         .join("\n");
 
-      // Crear el mensaje que se enviará a Telegram
+      const totalFinal = subtotal - descuentoTotal;
+
       const message = `
-  *Moto Isla tienda virtual*
+*Moto Isla tienda virtual*
 📦 *Nuevo pedido recibido*
 
 👤 Cliente: ${name} 
@@ -82,17 +105,15 @@ ${observaciones ? `📝 Observaciones: ${observaciones}\n` : ""}
 🛒 *Productos:*
 ${productos}
 
-💰 Total: ${getTotalAmount()} CUP
+💰 Subtotal: ${subtotal.toLocaleString()} CUP
+🔻 -10% de descuento (Oferta día de los padres)
+💵 Total: ${totalFinal.toLocaleString()} CUP
       `;
 
-      // Token del bot de Telegram y ID del chat donde enviarás el mensaje
       const botToken = "8106813744:AAHzcucB8vtwUQcyIBG-tWzzz8RofUFWv40";
-      const chatId = "914493813"; // Tu chat ID de Telegram
-
-      // URL de la API de Telegram
+      const chatId = "914493813";
       const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-      // Enviar el mensaje a Telegram
       await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -103,10 +124,7 @@ ${productos}
         }),
       });
 
-      // Mostrar el mensaje de éxito
       toast.success("Pedido realizado");
-
-      // Limpiar el carrito y redirigir al home
       sessionStorage.removeItem("cart");
       setTimeout(() => (window.location.href = "/"), 3000);
     } catch (validationError) {
@@ -124,6 +142,34 @@ ${productos}
     setIsDelivery(checked);
     setErrors({}); // Limpiar errores si el modo cambia
   };
+
+  // Previsualizar subtotal/descuento en pantalla
+  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  const productosConDescuento = [
+    "Bicicleta de Paseo",
+    "Bicicleta de Paseo para hombre Amarilla",
+    "Bicicleta de Paseo para hombre Verde",
+    "Bicicleta de Paseo para mujer Amarilla",
+    "Bicicleta de Paseo para mujer Gris",
+    "Bicicleta de Paseo para mujer Naranja",
+  ];
+
+  let subtotal = 0;
+  let descuentoTotal = 0;
+
+  cart.forEach((item) => {
+    const nombre = item.nombre || item.title;
+    const cantidad = item.quantity;
+    const precio = item.precio;
+    const totalItem = cantidad * precio;
+    subtotal += totalItem;
+
+    if (productosConDescuento.includes(nombre)) {
+      descuentoTotal += totalItem * 0.1;
+    }
+  });
+
+  const totalFinal = subtotal - descuentoTotal;
 
   return (
     <Box sx={{ padding: 4, maxWidth: "800px", margin: "0 auto" }}>
@@ -241,8 +287,6 @@ ${productos}
         </Grid>
       </Grid>
 
-      {/* Mapa de la tienda siempre visible */}
-      {/* Mapa de la tienda solo cuando NO es delivery */}
       {!isDelivery && (
         <Paper
           elevation={2}
@@ -279,16 +323,32 @@ ${productos}
       <Paper elevation={1} sx={{ padding: 2 }}>
         <Typography variant="subtitle1">Resumen del pedido</Typography>
         <hr />
-        <Typography variant="body1" fontWeight="bold">
-          {getCartTotal()} productos – {getTotalAmount().toLocaleString()} CUP
+        <Typography variant="body1">
+          Subtotal:{" "}
+          <strong>{subtotal.toLocaleString()} CUP</strong>
         </Typography>
+        {descuentoTotal > 0 && (
+          <>
+            <Typography variant="body2" color="error">
+              -10% de descuento (Oferta día de los padres)
+            </Typography>
+            <Typography variant="body1" fontWeight="bold">
+              Total con descuento: {totalFinal.toLocaleString()} CUP
+            </Typography>
+          </>
+        )}
+        {descuentoTotal === 0 && (
+          <Typography variant="body1" fontWeight="bold">
+            Total: {subtotal.toLocaleString()} CUP
+          </Typography>
+        )}
       </Paper>
 
       <Box sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}>
         <Button
           variant="contained"
           color="error"
-          onClick={handleSubmit} // Aquí se llama a handleSubmit al hacer clic
+          onClick={handleSubmit}
           sx={{
             borderRadius: "111px",
             padding: "10px 20px",
