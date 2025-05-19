@@ -324,8 +324,7 @@ ${productos}
         <Typography variant="subtitle1">Resumen del pedido</Typography>
         <hr />
         <Typography variant="body1">
-          Subtotal:{" "}
-          <strong>{subtotal.toLocaleString()} CUP</strong>
+          Subtotal: <strong>{subtotal.toLocaleString()} CUP</strong>
         </Typography>
         {descuentoTotal > 0 && (
           <>
