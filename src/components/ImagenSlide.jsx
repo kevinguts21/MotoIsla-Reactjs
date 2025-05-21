@@ -4,16 +4,16 @@ import { Box, IconButton, useMediaQuery, Divider } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
-import desktop from "../assets/Portada/Dekstop.png";
-import motorcycle from "../assets/Portada/moto.jpg";
-import portada from "../assets/Portada/PortadaDesk.png";
 import remotorizacion from "../assets/Portada/Remotorizacion.png";
 import Remoto from "../assets/Portada/Remoto.png";
 import Buy from "../assets/Portada/Buy.png";
 import bici from "../assets/Portada/bici.jpg";
+import cleta from "../assets/Portada/cleta.png";
 import biciniño from "../assets/Biciniñoroja.png";
 import montana from "../assets/montañabici.jpg";
 import paseo from "../assets/grisbici.jpg";
+import OfferM from "../assets/Portada/OfferMobile.png";
+import Offer from "../assets/Portada/Offer.png";
 
 const CustomPrevArrow = ({ onClick }) => (
   <IconButton
@@ -57,14 +57,17 @@ const ImagenSlide = () => {
   const [showModal, setShowModal] = useState(false);
 
   const desktopImages = [
-    { src: desktop, alt: "Desktop Image 1" },
-    { src: portada, alt: "Desktop Image 2" },
-    { src: remotorizacion, alt: "Desktop Image 3" },
+    { src: Offer, alt: "Desktop Image 1", onClick: () => setShowModal(true) },
+    {
+      src: remotorizacion,
+      alt: "Desktop Image 2",
+      onClick: () => navigate({ pathname: "/", search: "?subcategoria=6" }),
+    },
   ];
 
   const mobileImages = [
     {
-      src: bici,
+      src: OfferM,
       alt: "Bicis",
       onClick: () => setShowModal(true),
     },
@@ -146,7 +149,7 @@ const ImagenSlide = () => {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {[ 
+            {[
               { label: "Bici de paseo", subcategoria: 18, img: paseo },
               { label: "Bici de montaña", subcategoria: 19, img: montana },
               { label: "Bicis para niños", subcategoria: 23, img: biciniño },
