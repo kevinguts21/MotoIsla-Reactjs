@@ -8,7 +8,7 @@ import remotorizacion from "../assets/Portada/Remotorizacion.png";
 import Remoto from "../assets/Portada/Remoto.png";
 import Buy from "../assets/Portada/Buy.png";
 import bici from "../assets/Portada/bici.jpg";
-import cleta from "../assets/Portada/cleta.png";
+import cleta from "../assets/Portada/Cleta.png";
 import biciniño from "../assets/Biciniñoroja.png";
 import montana from "../assets/montañabici.jpg";
 import paseo from "../assets/grisbici.jpg";
