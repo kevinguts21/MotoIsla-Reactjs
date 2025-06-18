@@ -57,12 +57,7 @@ const Purchase = () => {
       const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
 
       const productosConDescuento = [
-        "Bicicleta de Paseo",
-        "Bicicleta de Paseo para hombre Amarilla",
-        "Bicicleta de Paseo para hombre Verde",
-        "Bicicleta de Paseo para mujer Amarilla",
-        "Bicicleta de Paseo para mujer Gris",
-        "Bicicleta de Paseo para mujer Naranja",
+         // <- Productos con descuento aquí**************************************************************
       ];
 
       let subtotal = 0;
@@ -152,12 +147,7 @@ ${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
   // Previsualizar subtotal/descuento en pantalla
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const productosConDescuento = [
-    "Bicicleta de Paseo",
-    "Bicicleta de Paseo para hombre Amarilla",
-    "Bicicleta de Paseo para hombre Verde",
-    "Bicicleta de Paseo para mujer Amarilla",
-    "Bicicleta de Paseo para mujer Gris",
-    "Bicicleta de Paseo para mujer Naranja",
+  // <- Productos con descuento aquí**************************************************************
   ];
 
   let subtotal = 0;
@@ -332,10 +322,10 @@ ${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
         <Typography variant="body1">
           Subtotal: <strong>{subtotal.toLocaleString()} CUP</strong>
         </Typography>
-        {descuentoTotal > 0 && (
+        {descuentoTotal > 0 && ( // <- Modificar nombre de descuento aquí***********************************************************
           <>
             <Typography variant="body2" color="error">
-              -10% de descuento (Oferta día de los padres)
+              -10% de descuento (Oferta por tiempo limitado)  
             </Typography>
             <Typography variant="body1" fontWeight="bold">
               Total con descuento: {totalFinal.toLocaleString()} CUP

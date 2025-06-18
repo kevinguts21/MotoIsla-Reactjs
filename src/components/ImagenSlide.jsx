@@ -12,8 +12,7 @@ import cleta from "../assets/Portada/Cleta.png";
 import biciniño from "../assets/Biciniñoroja.png";
 import montana from "../assets/montañabici.jpg";
 import paseo from "../assets/grisbici.jpg";
-import OfferM from "../assets/Portada/OfferMobile.png";
-import Offer from "../assets/Portada/Offer.png";
+
 
 const CustomPrevArrow = ({ onClick }) => (
   <IconButton
@@ -57,7 +56,7 @@ const ImagenSlide = () => {
   const [showModal, setShowModal] = useState(false);
 
   const desktopImages = [
-    { src: Offer, alt: "Desktop Image 1", onClick: () => setShowModal(true) },
+    { src: cleta, alt: "Desktop Image 1", onClick: () => setShowModal(true) },
     {
       src: remotorizacion,
       alt: "Desktop Image 2",
@@ -67,7 +66,7 @@ const ImagenSlide = () => {
 
   const mobileImages = [
     {
-      src: OfferM,
+      src: bici,
       alt: "Bicis",
       onClick: () => setShowModal(true),
     },
