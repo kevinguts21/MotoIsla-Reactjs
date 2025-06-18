@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
@@ -31,6 +32,7 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
     color,
     caracteristicas,
     componentes,
+    id,
   } = product;
 
   const disponibilidad =
@@ -71,6 +73,20 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
   const handleDecreaseQuantity = () =>
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/producto/${id}`;
+    try {
+      await navigator.share({
+        title: nombre,
+        text: "Mira este producto:",
+        url,
+      });
+    } catch (error) {
+      navigator.clipboard.writeText(url);
+      toast("Enlace copiado al portapapeles");
+    }
+  };
 
   return (
     <Box sx={{ padding: 1.5, marginTop: "15px" }}>
@@ -157,7 +173,7 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
             Fecha de Ingreso: {new Date(tiempo_creado).toLocaleDateString()}
           </Typography>
 
-          {/* Controles de cantidad y botón de agregar */}
+          {/* Controles de cantidad y botones */}
           <Box
             sx={{
               display: "flex",
@@ -174,20 +190,25 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
               <IconButton
                 color="primary"
                 onClick={handleIncreaseQuantity}
-                disabled={quantity >= cantidad_disponible} 
+                disabled={quantity >= cantidad_disponible}
               >
                 <AddIcon />
               </IconButton>
             </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddToCart}
-              sx={{ textTransform: "none", fontWeight: "bold" }}
-            >
-              Añadir al carrito
-              <ShoppingCartOutlinedIcon />
-            </Button>
+            <Box sx={{ display: "flex", gap: 1 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddToCart}
+                sx={{ textTransform: "none", fontWeight: "bold" }}
+              >
+                Añadir al carrito
+                <ShoppingCartOutlinedIcon />
+              </Button>
+              <IconButton color="primary" onClick={handleShare}>
+                <ShareIcon />
+              </IconButton>
+            </Box>
           </Box>
         </Box>
       </Paper>

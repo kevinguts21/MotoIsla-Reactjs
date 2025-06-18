@@ -8,22 +8,30 @@ import {
   Button,
   IconButton,
   Modal,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
+import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
+
+const exchangeRate = 375;
 
 const ProductDetailDesktop = ({
   product,
-  convertPrice,
+  convertPrice = (price, currency) =>
+    currency === "USD" ? (price / exchangeRate).toFixed(2) : price,
   handleSubcategoryClick,
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  const [isZoomOpen, setIsZoomOpen] = useState(false); // Controla el estado del modal de zoom
+  const [isZoomOpen, setIsZoomOpen] = useState(false);
+  const [currency, setCurrency] = useState("CUP");
 
   const {
+    id,
     nombre,
     descripcion,
     precio,
@@ -52,13 +60,16 @@ const ProductDetailDesktop = ({
     const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
     const productInCart = cart.find((item) => item.id === product.id);
 
+    const displayPrice = convertPrice(precio, currency);
+
     if (productInCart) {
       productInCart.quantity += quantity;
     } else {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: product.precio,
+        precio: displayPrice,
+        currency,
         quantity,
         imagen: product.imagen,
       });
@@ -69,7 +80,7 @@ const ProductDetailDesktop = ({
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
     setTotalQuantity(total);
 
-    toast.success(`${nombre} añadido al carrito.`);
+    toast.success(`${nombre} añadido al carrito en ${currency}.`);
   };
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -78,6 +89,24 @@ const ProductDetailDesktop = ({
 
   const handleZoomOpen = () => setIsZoomOpen(true);
   const handleZoomClose = () => setIsZoomOpen(false);
+
+  const handleCurrencyChange = (event) => {
+    setCurrency(event.target.value);
+  };
+
+  const handleShare = async () => {
+    const url = `${window.location.origin}/producto/${id}`;
+    try {
+      await navigator.share({
+        title: nombre,
+        text: "Mira este producto:",
+        url,
+      });
+    } catch (error) {
+      navigator.clipboard.writeText(url);
+      toast("Enlace copiado al portapapeles");
+    }
+  };
 
   return (
     <Box
@@ -111,7 +140,7 @@ const ProductDetailDesktop = ({
             alignItems: "center",
             justifyContent: "center",
             backgroundColor: "#fff",
-            position: "relative", // Para posicionar el botón de zoom
+            position: "relative",
           }}
         >
           <Box
@@ -127,7 +156,6 @@ const ProductDetailDesktop = ({
               position: "relative",
             }}
           >
-            {/* Imagen principal */}
             <img
               src={imagen}
               alt={nombre}
@@ -137,7 +165,6 @@ const ProductDetailDesktop = ({
                 objectFit: "contain",
               }}
             />
-            {/* Botón de zoom */}
             <IconButton
               onClick={handleZoomOpen}
               sx={{
@@ -172,13 +199,23 @@ const ProductDetailDesktop = ({
           <Typography variant="body1" sx={{ fontWeight: "bold" }}>
             Estado: {disponibilidad}
           </Typography>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            sx={{ fontSize: "0.9rem" }}
-          >
-            Precio: {precio} CUP
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ fontSize: "0.9rem" }}
+            >
+              Precio: {convertPrice(precio, currency)} {currency}
+            </Typography>
+            <Select
+              value={currency}
+              onChange={handleCurrencyChange}
+              sx={{ height: 30, fontSize: "0.8rem" }}
+            >
+              <MenuItem value="CUP">CUP</MenuItem>
+              <MenuItem value="USD">USD</MenuItem>
+            </Select>
+          </Box>
           <Typography
             variant="body2"
             color="textSecondary"
@@ -268,6 +305,9 @@ const ProductDetailDesktop = ({
             >
               Añadir al carrito
             </Button>
+            <IconButton color="primary" onClick={handleShare}>
+              <ShareIcon />
+            </IconButton>
           </Box>
         </Grid>
       </Grid>
@@ -284,7 +324,6 @@ const ProductDetailDesktop = ({
           {descripcion}
         </Typography>
       </Box>
-      {/* Modal de Zoom */}
       <Modal open={isZoomOpen} onClose={handleZoomClose}>
         <Box
           sx={{
