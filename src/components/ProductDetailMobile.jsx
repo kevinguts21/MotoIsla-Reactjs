@@ -75,7 +75,7 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/producto/${id}`;
+    const url = `${window.location.origin}/product/${id}`;
     try {
       await navigator.share({
         title: nombre,

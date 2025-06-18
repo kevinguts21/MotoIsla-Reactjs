@@ -95,7 +95,7 @@ const ProductDetailDesktop = ({
   };
 
   const handleShare = async () => {
-    const url = `${window.location.origin}/producto/${id}`;
+    const url = `${window.location.origin}/product/${id}`;
     try {
       await navigator.share({
         title: nombre,
