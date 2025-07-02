@@ -100,7 +100,7 @@ const Purchase = () => {
 
       // Solo incluir esta línea si hayDescuento es true
       const lineasDescuento = hayDescuento
-        ? `🔻 -10% de descuento (Oferta día de los padres)\n`
+        ? `🔻 -5% de descuento (Oferta de Verano)\n`
         : "";
 
       const message = `
