@@ -57,7 +57,18 @@ const Purchase = () => {
       const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
 
       const productosConDescuento = [
-         // <- Productos con descuento aquí**************************************************************
+        "Split 1 Tonelada con accesorios",
+        "Olla de Presión",
+        "Olla Reina multifuncional",
+        "Nevera de 7 pies EKO",
+        "Olla de Presión Multisuperficie (Inducción y Gas)",
+        "Cocina de Infrarrojos",
+        "Batidora de mano Midea",
+        "Batidora de mano Midea",
+        "Lg Tv 55",
+        "Arrocera",
+        "Plancha de ropa",
+        "Picadora de especias",
       ];
 
       let subtotal = 0;
@@ -147,7 +158,18 @@ ${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
   // Previsualizar subtotal/descuento en pantalla
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const productosConDescuento = [
-  // <- Productos con descuento aquí**************************************************************
+    "Split 1 Tonelada con accesorios",
+    "Olla de Presión",
+    "Olla Reina multifuncional",
+    "Nevera de 7 pies EKO",
+    "Olla de Presión Multisuperficie (Inducción y Gas)",
+    "Cocina de Infrarrojos",
+    "Batidora de mano Midea",
+    "Batidora de mano Midea",
+    "Lg Tv 55",
+    "Arrocera",
+    "Plancha de ropa",
+    "Picadora de especias",
   ];
 
   let subtotal = 0;
@@ -322,10 +344,10 @@ ${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
         <Typography variant="body1">
           Subtotal: <strong>{subtotal.toLocaleString()} CUP</strong>
         </Typography>
-        {descuentoTotal > 0 && ( // <- Modificar nombre de descuento aquí***********************************************************
+        {descuentoTotal > 0 &&  ( // <- Modificar nombre de descuento aquí***********************************************************
           <>
             <Typography variant="body2" color="error">
-              -10% de descuento (Oferta por tiempo limitado)  
+              -5% de descuento (Oferta por verano)
             </Typography>
             <Typography variant="body1" fontWeight="bold">
               Total con descuento: {totalFinal.toLocaleString()} CUP
