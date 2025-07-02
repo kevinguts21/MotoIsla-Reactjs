@@ -86,10 +86,10 @@ const Purchase = () => {
           let linea = `• ${nombre}: ${cantidad} x ${precio} = ${totalItem} CUP`;
 
           if (productosConDescuento.includes(nombre)) {
-            const descuentoItem = totalItem * 0.05;
+            const descuentoItem = totalItem * 0.05; ////////////////////////////<<<<<<<<<<<<<<<<<<<<<<<<<< cambiar porcentaje
             descuentoTotal += descuentoItem;
             hayDescuento = true; // se activa si al menos uno califica
-            linea += ` (-5% Oferta de verano)`;
+            linea += ` (-5% Oferta de verano)`; ////////////////////////////////<<<<<<<<<<<<<<<<<<<<<< modificar tipografía del descuento
           }
 
           return linea;
@@ -183,7 +183,7 @@ ${lineasDescuento}💵 Total: ${totalFinal.toLocaleString()} CUP
     subtotal += totalItem;
 
     if (productosConDescuento.includes(nombre)) {
-      descuentoTotal += totalItem * 0.05;
+      descuentoTotal += totalItem * 0.05;/////////////<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< cambiar porcentaje de descuento 
     }
   });
 
