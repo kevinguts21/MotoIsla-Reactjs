@@ -15,7 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-const exchangeRate = 375; // 1 USD = 340 CUP
+const exchangeRate = 380; // 1 USD = 340 CUP
 
 const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
   const [quantity, setQuantity] = useState(1);
