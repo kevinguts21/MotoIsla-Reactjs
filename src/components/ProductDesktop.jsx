@@ -17,7 +17,7 @@ import AddIcon from "@mui/icons-material/Add";
 import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
 
-const exchangeRate = 380;
+const exchangeRate = 390;
 
 const ProductDetailDesktop = ({
   product,
