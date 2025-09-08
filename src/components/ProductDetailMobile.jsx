@@ -15,7 +15,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-const exchangeRate = 390; // 1 USD = 340 CUP
+const exchangeRate = 410;
 
 const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
   const [quantity, setQuantity] = useState(1);
@@ -59,15 +59,15 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: convertPrice(product.precio, currency),
-        currency,
+        precio: precio, // ✅ Siempre en CUP
+        currency: "CUP", // ✅ Forzado a CUP
         quantity,
         imagen: product.imagen,
       });
     }
 
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    toast.success(`${nombre} añadido al carrito en ${currency}.`);
+    toast.success(`${nombre} añadido al carrito.`);
   };
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -93,10 +93,11 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
       <Toaster position="top-center" />
       <Paper
         sx={{
-          border: "1px solid #ddd",
-          borderRadius: "8px",
+          border: "1px solid #e0e0e0",
+          borderRadius: "16px",
           padding: 2,
-          backgroundColor: "#f9f9f9",
+          backgroundColor: "#fff",
+          boxShadow: "0px 3px 10px rgba(0,0,0,0.05)",
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -106,12 +107,14 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
             alt={nombre}
             sx={{
               width: "100%",
-              borderRadius: 2,
-              marginTop: 2,
+              borderRadius: "12px",
+              marginTop: 1,
               boxShadow: 2,
+              transition: "transform 0.3s ease",
+              "&:hover": { transform: "scale(1.02)" },
             }}
           />
-          <Typography variant="h6" color="textSecondary">
+          <Typography variant="h6" sx={{ fontWeight: "600", color: "#333" }}>
             {nombre}
           </Typography>
 
@@ -126,7 +129,12 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
             <Select
               value={currency}
               onChange={handleCurrencyChange}
-              sx={{ height: "40px", fontSize: "1rem" }}
+              sx={{
+                height: "40px",
+                fontSize: "1rem",
+                borderRadius: "12px",
+                "& .MuiSelect-select": { paddingY: "8px" },
+              }}
             >
               <MenuItem value="CUP">CUP</MenuItem>
               <MenuItem value="USD">USD</MenuItem>
@@ -151,7 +159,7 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
               to={`/?subcategoria=${subcategoria?.id}`}
               style={{
                 textDecoration: "none",
-                fontWeight: "normal",
+                fontWeight: "500",
                 color: "#007bff",
               }}
               onClick={() => handleSubcategoryClick(subcategoria?.id)}
@@ -159,7 +167,9 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
               {subcategoriaNombre}
             </Link>
           </Typography>
-          <Typography variant="body2">Categoría: {categoriaNombre}</Typography>
+          <Typography variant="body2" sx={{ color: "#555" }}>
+            Categoría: {categoriaNombre}
+          </Typography>
           {color && <Typography variant="body2">Color: {color}</Typography>}
           {caracteristicas && (
             <Typography variant="body2">
@@ -180,17 +190,34 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
               alignItems: "center",
               justifyContent: "space-between",
               marginTop: 2,
+              flexWrap: "wrap",
+              gap: 2,
             }}
           >
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <IconButton color="primary" onClick={handleDecreaseQuantity}>
+              <IconButton
+                color="primary"
+                onClick={handleDecreaseQuantity}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: "12px",
+                  backgroundColor: "#f8f8f8",
+                }}
+              >
                 <RemoveIcon />
               </IconButton>
-              <Typography variant="body1">{quantity}</Typography>
+              <Typography variant="body1" sx={{ fontWeight: "500" }}>
+                {quantity}
+              </Typography>
               <IconButton
                 color="primary"
                 onClick={handleIncreaseQuantity}
                 disabled={quantity >= cantidad_disponible}
+                sx={{
+                  border: "1px solid #ddd",
+                  borderRadius: "12px",
+                  backgroundColor: "#f8f8f8",
+                }}
               >
                 <AddIcon />
               </IconButton>
@@ -200,12 +227,26 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleAddToCart}
-                sx={{ textTransform: "none", fontWeight: "bold" }}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  borderRadius: "20px",
+                  px: 2,
+                  boxShadow: "0px 3px 6px rgba(0,0,0,0.1)",
+                }}
               >
-                Añadir al carrito
-                <ShoppingCartOutlinedIcon />
+                Añadir
+                <ShoppingCartOutlinedIcon sx={{ ml: 1 }} />
               </Button>
-              <IconButton color="primary" onClick={handleShare}>
+              <IconButton
+                color="primary"
+                onClick={handleShare}
+                sx={{
+                  borderRadius: "12px",
+                  border: "1px solid #ddd",
+                  backgroundColor: "#f8f8f8",
+                }}
+              >
                 <ShareIcon />
               </IconButton>
             </Box>
@@ -216,14 +257,15 @@ const ProductDetailMobile = ({ product, handleSubcategoryClick }) => {
       {/* Descripción del producto */}
       <Paper
         sx={{
-          border: "1px solid #ddd",
-          borderRadius: "9px",
-          marginTop: 1.5,
+          border: "1px solid #eee",
+          borderRadius: "14px",
+          marginTop: 2,
           padding: 2,
-          backgroundColor: "#fff",
+          backgroundColor: "#fafafa",
+          boxShadow: "0px 2px 6px rgba(0,0,0,0.05)",
         }}
       >
-        <Typography variant="body1">
+        <Typography variant="body1" sx={{ fontWeight: "500", color: "#333" }}>
           <strong>Detalles</strong>
           <hr />
           {descripcion}

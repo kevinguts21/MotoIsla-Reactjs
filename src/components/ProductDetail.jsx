@@ -16,6 +16,7 @@ const ProductDetail = () => {
   const [currency, setCurrency] = useState("CUP"); // Estado para la moneda
   const isMobile = useMediaQuery("(max-width: 600px)");
 
+  // Cargar producto
   useEffect(() => {
     const fetchProductData = async () => {
       try {
@@ -31,46 +32,49 @@ const ProductDetail = () => {
     fetchProductData();
   }, [id]);
 
+  // Cambio de moneda
   const handleCurrencyChange = (selectedCurrency) => {
     setCurrency(selectedCurrency);
   };
 
+  // Conversión de precio solo para mostrar
   const convertPrice = (priceInCUP) => {
-    const exchangeRate = 390; // 1 USD = 375 CUP
-    return currency === "USD"
-      ? (priceInCUP / exchangeRate).toFixed(2)
-      : priceInCUP.toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+    const exchangeRate = 410; // 1 USD = 410 CUP
+    if (currency === "USD") {
+      return (priceInCUP / exchangeRate).toFixed(2);
+    }
+    return priceInCUP.toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
   };
 
+  // Añadir al carrito SIEMPRE en CUP
   const handleAddToCart = () => {
     const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
     const productInCart = cart.find((item) => item.id === product.id);
 
     if (productInCart) {
-      productInCart.quantity += quantity;
+      productInCart.cantidad += quantity;
     } else {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: convertPrice(product.precio), // Asegura que el precio se guarda en la moneda actual
+        precio: product.precio, // siempre en CUP
         cantidad: quantity,
         imagen: product.imagen,
-        moneda: currency, // Guarda la moneda seleccionada
+        moneda: "CUP", // forzamos CUP
       });
     }
 
     sessionStorage.setItem("cart", JSON.stringify(cart));
-    alert(`${product.nombre} añadido al carrito en ${currency}.`);
+    alert(`${product.nombre} añadido al carrito (precio en CUP).`);
   };
 
+  // Estados de carga y error
   if (loading) {
     return (
-      <div
-        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
-      >
+      <div style={{ display: "flex", justifyContent: "center", marginTop: 20 }}>
         <CircularProgress />
       </div>
     );
@@ -81,7 +85,7 @@ const ProductDetail = () => {
       <Typography
         variant="h5"
         color="error"
-        style={{ textAlign: "center", marginTop: "20px" }}
+        style={{ textAlign: "center", marginTop: 20 }}
       >
         {error}
       </Typography>

@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import {
   Grid,
   Typography,
-  Paper,
   Box,
   Button,
   IconButton,
   Modal,
   Select,
   MenuItem,
+  Card,
+  CardContent,
+  Divider,
 } from "@mui/material";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -17,14 +19,9 @@ import AddIcon from "@mui/icons-material/Add";
 import ShareIcon from "@mui/icons-material/Share";
 import toast, { Toaster } from "react-hot-toast";
 
-const exchangeRate = 390;
+const exchangeRate = 410; // ✅ Valor de cambio
 
-const ProductDetailDesktop = ({
-  product,
-  convertPrice = (price, currency) =>
-    currency === "USD" ? (price / exchangeRate).toFixed(2) : price,
-  handleSubcategoryClick,
-}) => {
+const ProductDetailDesktop = ({ product, handleSubcategoryClick }) => {
   const [quantity, setQuantity] = useState(1);
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [isZoomOpen, setIsZoomOpen] = useState(false);
@@ -44,6 +41,10 @@ const ProductDetailDesktop = ({
     componentes,
   } = product;
 
+  const convertPrice = (price, currency) => {
+    return currency === "USD" ? (price / exchangeRate).toFixed(2) : price;
+  };
+
   const disponibilidad =
     cantidad_disponible > 0 ? "Disponible" : "No disponible";
   const categoriaNombre =
@@ -60,16 +61,14 @@ const ProductDetailDesktop = ({
     const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
     const productInCart = cart.find((item) => item.id === product.id);
 
-    const displayPrice = convertPrice(precio, currency);
-
     if (productInCart) {
       productInCart.quantity += quantity;
     } else {
       cart.push({
         id: product.id,
         nombre: product.nombre,
-        precio: displayPrice,
-        currency,
+        precio: precio, // ✅ Siempre en CUP
+        currency: "CUP", // ✅ Forzado a CUP
         quantity,
         imagen: product.imagen,
       });
@@ -80,7 +79,8 @@ const ProductDetailDesktop = ({
     const total = cart.reduce((sum, item) => sum + item.quantity, 0);
     setTotalQuantity(total);
 
-    toast.success(`${nombre} añadido al carrito en ${currency}.`);
+    // ✅ Mensaje sin mencionar la moneda
+    toast.success(`${nombre} añadido al carrito.`);
   };
 
   const handleIncreaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -111,9 +111,6 @@ const ProductDetailDesktop = ({
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
         maxWidth: "1200px",
         margin: "0 auto",
         padding: 2,
@@ -121,209 +118,179 @@ const ProductDetailDesktop = ({
       }}
     >
       <Toaster position="top-center" />
-      <Grid
-        container
-        spacing={2}
+      <Card
         sx={{
-          border: "1px solid #ddd",
-          borderRadius: "8px",
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
           overflow: "hidden",
-          alignItems: "stretch",
         }}
       >
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: "#fff",
-            position: "relative",
-          }}
-        >
-          <Box
-            sx={{
-              width: "95%",
-              height: "95%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden",
-              borderRadius: "8px",
-              backgroundColor: "#f0f0f0",
-              position: "relative",
-            }}
-          >
-            <img
-              src={imagen}
-              alt={nombre}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-              }}
-            />
-            <IconButton
-              onClick={handleZoomOpen}
+        <Grid container spacing={2} alignItems="stretch">
+          {/* Imagen */}
+          <Grid item xs={12} md={6}>
+            <Box
               sx={{
-                position: "absolute",
-                bottom: "10px",
-                left: "10px",
-                backgroundColor: "rgba(0, 0, 0, 0.6)",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.8)",
-                },
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: "#fafafa",
+                position: "relative",
               }}
             >
-              <ZoomInIcon />
-            </IconButton>
-          </Box>
+              <img
+                src={imagen}
+                alt={nombre}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "450px",
+                  objectFit: "contain",
+                  borderRadius: "12px",
+                }}
+              />
+              <IconButton
+                onClick={handleZoomOpen}
+                sx={{
+                  position: "absolute",
+                  bottom: 12,
+                  left: 12,
+                  backgroundColor: "rgba(0,0,0,0.6)",
+                  color: "#fff",
+                  "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
+                }}
+              >
+                <ZoomInIcon />
+              </IconButton>
+            </Box>
+          </Grid>
+
+          {/* Detalles */}
+          <Grid item xs={12} md={6}>
+            <CardContent
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+                gap: 1.5,
+              }}
+            >
+              <Typography variant="h5" fontWeight="bold">
+                {nombre}
+              </Typography>
+              <Typography
+                variant="body1"
+                color="success.main"
+                fontWeight="bold"
+              >
+                Estado: {disponibilidad}
+              </Typography>
+
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="h6" fontWeight="bold">
+                  {convertPrice(precio, currency)} {currency}
+                </Typography>
+                <Select
+                  value={currency}
+                  onChange={handleCurrencyChange}
+                  sx={{
+                    height: 32,
+                    fontSize: "0.9rem",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <MenuItem value="CUP">CUP</MenuItem>
+                  <MenuItem value="USD">USD</MenuItem>
+                </Select>
+              </Box>
+
+              <Typography variant="body2" color="text.secondary">
+                Fecha de ingreso: {new Date(tiempo_creado).toLocaleDateString()}
+              </Typography>
+
+              <Divider />
+
+              <Typography variant="body2" color="text.secondary">
+                Subcategoría:{" "}
+                <Link
+                  to={`/?subcategoria=${subcategoria?.id}`}
+                  style={{ textDecoration: "none", color: "#1976d2" }}
+                  onClick={() => handleSubcategoryClick(subcategoria?.id)}
+                >
+                  {subcategoriaNombre}
+                </Link>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Categoría: {categoriaNombre}
+              </Typography>
+              {color && <Typography variant="body2">Color: {color}</Typography>}
+              {caracteristicas && (
+                <Typography variant="body2">
+                  Características: {caracteristicas}
+                </Typography>
+              )}
+              {componentes && (
+                <Typography variant="body2">
+                  Componentes: {componentes}
+                </Typography>
+              )}
+
+              {/* Controles */}
+              <Box
+                sx={{
+                  marginTop: 3,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  flexWrap: "wrap",
+                }}
+              >
+                <IconButton
+                  onClick={handleDecreaseQuantity}
+                  color="primary"
+                  sx={{ border: "1px solid #ddd" }}
+                >
+                  <RemoveIcon />
+                </IconButton>
+                <Typography variant="h6">{quantity}</Typography>
+                <IconButton
+                  onClick={handleIncreaseQuantity}
+                  color="primary"
+                  disabled={quantity >= cantidad_disponible}
+                  sx={{ border: "1px solid #ddd" }}
+                >
+                  <AddIcon />
+                </IconButton>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleAddToCart}
+                  sx={{
+                    fontWeight: "bold",
+                    textTransform: "none",
+                    borderRadius: "8px",
+                  }}
+                >
+                  Añadir al carrito
+                </Button>
+                <IconButton color="primary" onClick={handleShare}>
+                  <ShareIcon />
+                </IconButton>
+              </Box>
+            </CardContent>
+          </Grid>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            padding: 2,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
-            {nombre}
-          </Typography>
-          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-            Estado: {disponibilidad}
-          </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              sx={{ fontSize: "0.9rem" }}
-            >
-              Precio: {convertPrice(precio, currency)} {currency}
-            </Typography>
-            <Select
-              value={currency}
-              onChange={handleCurrencyChange}
-              sx={{ height: 30, fontSize: "0.8rem" }}
-            >
-              <MenuItem value="CUP">CUP</MenuItem>
-              <MenuItem value="USD">USD</MenuItem>
-            </Select>
-          </Box>
-          <Typography
-            variant="body2"
-            color="textSecondary"
-            sx={{ fontSize: "0.9rem" }}
-          >
-            Fecha de Ingreso: {new Date(tiempo_creado).toLocaleDateString()}
-          </Typography>
-          <hr style={{ border: "1px solid #ddd", margin: "10px 0" }} />
-          <Typography variant="body2" color="textSecondary">
-            Subcategoría:{" "}
-            <Link
-              to={`/?subcategoria=${subcategoria?.id}`}
-              style={{
-                textDecoration: "none",
-                fontWeight: "normal",
-                color: "#007bff",
-              }}
-              onClick={() => handleSubcategoryClick(subcategoria?.id)}
-            >
-              {subcategoriaNombre}
-            </Link>
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Categoría: {categoriaNombre}
-          </Typography>
-          {color && (
-            <Typography variant="body2" color="textSecondary">
-              Color: {color}
-            </Typography>
-          )}
-          {caracteristicas && (
-            <Typography variant="body2" color="textSecondary">
-              Características: {caracteristicas}
-            </Typography>
-          )}
-          {componentes && (
-            <Typography variant="body2" color="textSecondary">
-              Componentes: {componentes}
-            </Typography>
-          )}
-          <Box
-            sx={{
-              marginTop: 2,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-              gap: 1,
-            }}
-          >
-            <IconButton
-              color="primary"
-              onClick={handleDecreaseQuantity}
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                  boxShadow: "none",
-                },
-              }}
-            >
-              <RemoveIcon />
-            </IconButton>
-            <Typography variant="h6">{quantity}</Typography>
-            <IconButton
-              color="primary"
-              onClick={handleIncreaseQuantity}
-              disabled={quantity >= cantidad_disponible}
-              sx={{
-                "&:focus": {
-                  outline: "none",
-                  boxShadow: "none",
-                },
-              }}
-            >
-              <AddIcon />
-            </IconButton>
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              onClick={handleAddToCart}
-              sx={{
-                padding: "6px 12px",
-                fontSize: "0.8rem",
-                fontWeight: "bold",
-                textTransform: "none",
-              }}
-            >
-              Añadir al carrito
-            </Button>
-            <IconButton color="primary" onClick={handleShare}>
-              <ShareIcon />
-            </IconButton>
-          </Box>
-        </Grid>
-      </Grid>
-      <Box
-        sx={{
-          marginTop: 2,
-          padding: 2,
-          width: "100%",
-          backgroundColor: "#fff",
-        }}
-      >
-        <hr style={{ border: "1px solid #ddd", margin: "0 0 10px 0" }} />
-        <Typography variant="body1" sx={{ fontSize: "1rem" }}>
-          {descripcion}
-        </Typography>
-      </Box>
+      </Card>
+
+      {/* Descripción */}
+      <Card sx={{ marginTop: 2, borderRadius: "16px" }}>
+        <CardContent>
+          <Typography variant="body1">{descripcion}</Typography>
+        </CardContent>
+      </Card>
+
+      {/* Modal Zoom */}
       <Modal open={isZoomOpen} onClose={handleZoomClose}>
         <Box
           sx={{
@@ -332,7 +299,7 @@ const ProductDetailDesktop = ({
             justifyContent: "center",
             width: "100vw",
             height: "100vh",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            backgroundColor: "rgba(0,0,0,0.9)",
             overflow: "auto",
           }}
         >
@@ -343,6 +310,7 @@ const ProductDetailDesktop = ({
               maxWidth: "90%",
               maxHeight: "90%",
               objectFit: "contain",
+              borderRadius: "12px",
             }}
           />
         </Box>
