@@ -39,7 +39,7 @@ const ProductDetail = () => {
 
   // Conversión de precio solo para mostrar
   const convertPrice = (priceInCUP) => {
-    const exchangeRate = 410; // 1 USD = 410 CUP
+    const exchangeRate = 420; // 1 USD = 410 CUP
     if (currency === "USD") {
       return (priceInCUP / exchangeRate).toFixed(2);
     }
