@@ -26,7 +26,7 @@ const faqs = [
     id: "faq2",
     question: "¿Cuáles son los métodos de pago?",
     answer:
-      "El pago se realiza de forma presencial, al llegar el domicilio o en la tienda física.",
+      "El pago se realiza de forma presencialmente, al llegar el domicilio o en la tienda física.",
     icon: <CreditCardIcon color="secondary" sx={{ mr: 1 }} />,
   },
   {
